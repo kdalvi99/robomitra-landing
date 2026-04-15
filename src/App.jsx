@@ -33,7 +33,7 @@ import heroImage from "./assets/hero.jpg";
 import manualImage from "./assets/manual.jpg";
 import pouchImage from "./assets/pouch.jpg";
 
-const meeshoUrl = "https://www.meesho.com/";
+const meeshoUrl = "https://www.meesho.com/s/p/ewd36y?utm_source=s";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 36 },
@@ -57,12 +57,12 @@ const highlights = [
   {
     icon: ShieldCheck,
     title: "Premium Build Quality",
-    text: "A polished finish, compact body, and strong construction give it a more premium feel in hand and on display.",
+    text: "Each RoboMitra unit is handmade with love, giving it a polished finish, compact body, and a more premium feel in hand and on display.",
   },
   {
     icon: Zap,
-    title: "Fast Charging Convenience",
-    text: "Type-C charging and portable sizing make RoboMitra easy to keep powered and ready to use anytime.",
+    title: "Compact size Convenience",
+    text: "Portable sizing make RoboMitra ready to use anytime.",
   },
 ];
 
@@ -77,11 +77,11 @@ const featureCards = [
     title: "Easy To Carry And Place",
     text: "Small enough for desks, shelves, and bedside tables, while still standing out as a display-worthy companion robot.",
   },
-  {
-    icon: BadgeCheck,
-    title: "Simple To Order",
-    text: "A direct Buy Now path takes shoppers straight to Meesho, keeping the purchase flow easy and familiar.",
-  },
+  // {
+  //   icon: BadgeCheck,
+  //   title: "Simple To Order",
+  //   text: "A direct Buy Now path takes shoppers straight to Meesho, keeping the purchase flow easy and familiar.",
+  // },
 ];
 
 const productFeatures = [
@@ -105,11 +105,11 @@ const productFeatures = [
     title: "Cute Animations",
     text: "Delightful animation moments make RoboMitra feel lively without losing its premium product feel.",
   },
-  {
-    icon: Zap,
-    title: "Type-C Fast Charging",
-    text: "Quick, modern charging support keeps the product easy to power up and use every day.",
-  },
+  // {
+  //   icon: Zap,
+  //   title: "Type-C Fast Charging",
+  //   text: "Quick, modern charging support keeps the product easy to power up and use every day.",
+  // },
   {
     icon: Backpack,
     title: "Compact and Portable",
@@ -160,8 +160,8 @@ const galleryShots = [
   },
   {
     image: manualImage,
-    title: "Manual And Packaging",
-    alt: "RoboMitra manual and packaging",
+    title: "Manual",
+    alt: "RoboMitra manual",
     caption: "Packaging and printed material help build trust and make the overall bundle feel complete.",
   },
 ];
@@ -621,7 +621,7 @@ function App() {
           </FadeIn>
 
           <FadeIn className="hero-visual" delay={0.16}>
-            <div className="product-stage">
+            <div className="">
               <div className="product-card">
                 <div className="product-image">
                   <img
@@ -636,8 +636,7 @@ function App() {
                     <ProductName />
                   </h3>
                   <p>
-                    A real front-facing RoboMitra photo now leads the hero so the
-                    page feels like a proper product showcase from the first fold.
+                    Each RoboMitra unit is handmade with love, giving it a polished finish, compact body, and a more premium feel in hand and on display.
                   </p>
                 </div>
               </div>
@@ -723,8 +722,9 @@ function App() {
             <p>
               RoboMitra is designed for people who want a small interactive robot
               that feels more polished than a typical novelty item. It is easy to
-              place on a desk or shelf, simple to recharge, and made to deliver a
-              charming experience through motion and expression.
+              place on a desk or shelf, simple to recharge, and handmade with
+              love to deliver a charming experience through motion and
+              expression.
             </p>
 
             <div className="feature-list">
