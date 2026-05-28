@@ -1,18 +1,20 @@
 import { Clock3, Mail, Wrench } from "lucide-react";
 import Header from "../components/Header";
 import FadeIn from "../components/FadeIn";
-import { meeshoUrl, supportFaqs } from "../content";
+import { instagramUrl, supportFaqs } from "../content";
 
-function SupportPage({ onNavigate }) {
+function SupportPage({ onNavigate, theme, onToggleTheme }) {
   return (
     <div className="page-shell support-shell">
       <Header
         ariaLabel="Support navigation"
         onNavigate={onNavigate}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
         links={[
           { href: "/", label: "Home" },
           { href: "/aboutus", label: "About Us" },
-          { href: meeshoUrl, label: "Buy Now", external: true },
+          { href: instagramUrl, label: "Buy Now", external: true },
         ]}
       />
 

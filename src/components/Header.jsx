@@ -1,8 +1,17 @@
-import { Menu, Sparkles, X } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import ProductName from "./ProductName";
+import headerLogo from "../assets/header-logo-new.png";
 
-function Header({ links, ariaLabel, onNavigate, isHome = false }) {
+function Header({
+  links,
+  ariaLabel,
+  onNavigate,
+  isHome = false,
+  theme,
+  onToggleTheme,
+  promoText,
+  tagline,
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -23,6 +32,7 @@ function Header({ links, ariaLabel, onNavigate, isHome = false }) {
 
   return (
     <header className="topbar">
+      {promoText ? <div className="promo-bar">{promoText}</div> : null}
       <div className="navbar">
         <div className="navbar-row">
           <a
@@ -31,14 +41,11 @@ function Header({ links, ariaLabel, onNavigate, isHome = false }) {
             aria-label="RoboMitra home"
             onClick={(event) => handleInternalNavigation(event, "/")}
           >
-            <div className="brand-mark">
-              <Sparkles size={18} />
-            </div>
-            <div className="brand-copy">
-              <h1>
-                <ProductName />
-              </h1>
-            </div>
+            <img
+              className="brand-logo-image"
+              src={headerLogo}
+              alt={tagline ? `RoboMitra ${tagline}` : "RoboMitra"}
+            />
           </a>
 
           <button
@@ -58,6 +65,15 @@ function Header({ links, ariaLabel, onNavigate, isHome = false }) {
           className={`nav-links ${menuOpen ? "nav-links-open" : ""}`}
           aria-label={ariaLabel}
         >
+          <button
+            type="button"
+            className="theme-toggle"
+            onClick={onToggleTheme}
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            <span>{theme === "dark" ? "Light" : "Dark"}</span>
+          </button>
           {links.map(({ href, label, external }) => (
             <a
               key={`${href}-${label}`}

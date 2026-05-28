@@ -1,105 +1,60 @@
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+} from "lucide-react";
 import FadeIn from "../components/FadeIn";
 import GalleryCard from "../components/GalleryCard";
 import Header from "../components/Header";
-import ProductName from "../components/ProductName";
+import heroReferenceDarkShot from "../../bec4568b-9ea5-4b72-844e-27d7d9d113f7.png";
+import heroReferenceLightShot from "../../ChatGPT Image May 28, 2026, 01_25_30 PM.png";
 import {
   boxContents,
   featureCards,
   galleryShots,
   highlights,
-  meeshoUrl,
+  instagramUrl,
   productFeatures,
   productImages,
-  stats,
 } from "../content";
 
-function HomePage({ onNavigate }) {
-  const { dualRobotsImage, fullKitImage, heroImage, pouchImage } = productImages;
+function HomePage({ onNavigate, theme, onToggleTheme }) {
+  const { dualRobotsImage, fullKitImage, pouchImage } = productImages;
+  const heroReferenceShot =
+    theme === "light" ? heroReferenceLightShot : heroReferenceDarkShot;
 
   return (
     <div className="page-shell">
       <Header
         ariaLabel="Primary"
         onNavigate={onNavigate}
+        theme={theme}
+        onToggleTheme={onToggleTheme}
         isHome
+        promoText="Launch Offer: Free Shipping on all orders!"
+        tagline="Your Smart Desk Buddy"
         links={[
+          { href: "#home", label: "Home" },
           { href: "#features", label: "Features" },
-          { href: "/aboutus", label: "About Us" },
-          { href: "/support", label: "Support" },
-          { href: meeshoUrl, label: "Buy Now", external: true },
+          { href: "#gallery", label: "Gallery" },
+          { href: "/support", label: "FAQ" },
+          { href: instagramUrl, label: "Buy Now", external: true },
         ]}
       />
 
       <main>
-        <section className="hero" id="home">
-          <FadeIn className="hero-copy" delay={0.05}>
-            <p className="section-tag">Interactive companion robot</p>
-            <h2>
-              Meet <ProductName />, the expressive mini robot made to move, react,
-              and charm instantly.
-            </h2>
-            <p className="hero-text">
-              A compact premium robot with smooth eye movements, cute animations,
-              human-like emotions, and robot-to-robot interaction when two units
-              come close together.
-            </p>
-
-            <div className="cta-row">
-              <a
-                className="primary-button"
-                href={meeshoUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Buy Now
-                <ArrowRight size={18} />
-              </a>
-              <a
-                className="secondary-button"
-                href="#details"
-                onClick={(event) => {
-                  event.preventDefault();
-                  onNavigate("#details");
-                }}
-              >
-                View Product Details
-              </a>
-            </div>
-
-            <div className="stat-grid">
-              {stats.map((stat) => (
-                <FadeIn className="stat-card" delay={0.12} key={stat.label}>
-                  <strong>{stat.value}</strong>
-                  <span>{stat.label}</span>
-                </FadeIn>
-              ))}
-            </div>
-          </FadeIn>
-
-          <FadeIn className="hero-visual" delay={0.16}>
-            <div>
-              <div className="product-card">
-                <div className="product-image">
-                  <img
-                    className="hero-product-photo"
-                    src={heroImage}
-                    alt="RoboMitra hero product view"
-                  />
-                </div>
-                <div className="product-meta">
-                  <p className="meta-label">Featured product</p>
-                  <h3>
-                    <ProductName />
-                  </h3>
-                  <p>
-                    Each RoboMitra unit is handmade with love, giving it a polished
-                    finish, compact body, and a more premium feel in hand and on
-                    display.
-                  </p>
-                </div>
-              </div>
-            </div>
+        <section className="hero hero-reference" id="home">
+          <FadeIn className="hero-shot-wrap" delay={0.05}>
+            <img
+              className="hero-shot-exact"
+              src={heroReferenceShot}
+              alt="RoboMitra landing design reference"
+            />
+            <a
+              className="hero-hotspot hero-hotspot-order"
+              href={instagramUrl}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Buy RoboMitra now on Instagram"
+            />
           </FadeIn>
         </section>
 
@@ -152,11 +107,11 @@ function HomePage({ onNavigate }) {
         <section className="gallery-section" id="gallery">
           <FadeIn className="gallery-intro" delay={0.06}>
             <p className="section-tag">Product gallery</p>
-            <h2>Show the real product, packaging, and accessories in a cleaner store-style layout.</h2>
+            <h2>See the real RoboMitra, packaging, and accessories in a cleaner store-style layout.</h2>
             <p>
               Your actual RoboMitra photos are now placed across the site to show
               the robot unit, two-robot interaction, charging cable, pouch,
-              manual, and full package contents in a cleaner product-page format.
+              manual, and full package contents.
             </p>
           </FadeIn>
 
@@ -229,11 +184,11 @@ function HomePage({ onNavigate }) {
 
         <FadeIn as="section" className="cta-banner" delay={0.1}>
           <div>
-            <p className="section-tag">Ready to order</p>
-            <h2>Bring home RoboMitra and order directly through Meesho.</h2>
+            <p className="section-tag">Order on Instagram</p>
+            <h2>To order RoboMitra, DM us on Instagram at @RoboMitra.tech.</h2>
           </div>
-          <a className="primary-button" href={meeshoUrl} target="_blank" rel="noreferrer">
-            Buy <ProductName /> Now
+          <a className="primary-button" href={instagramUrl} target="_blank" rel="noreferrer">
+            Buy Now
             <ArrowRight size={18} />
           </a>
         </FadeIn>

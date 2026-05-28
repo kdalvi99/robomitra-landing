@@ -5,6 +5,18 @@ import SupportPage from "./pages/SupportPage";
 
 function App() {
   const [pathname, setPathname] = useState(window.location.pathname);
+  const [theme, setTheme] = useState(() => {
+    return window.localStorage.getItem("theme") || "dark";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    window.localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
 
   const navigateTo = (href) => {
     if (href.startsWith("#")) {
@@ -39,14 +51,32 @@ function App() {
   }, []);
 
   if (pathname === "/support") {
-    return <SupportPage onNavigate={navigateTo} />;
+    return (
+      <SupportPage
+        onNavigate={navigateTo}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+    );
   }
 
   if (pathname === "/about" || pathname === "/aboutus") {
-    return <AboutPage onNavigate={navigateTo} />;
+    return (
+      <AboutPage
+        onNavigate={navigateTo}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+    );
   }
 
-  return <HomePage onNavigate={navigateTo} />;
+  return (
+    <HomePage
+      onNavigate={navigateTo}
+      theme={theme}
+      onToggleTheme={toggleTheme}
+    />
+  );
 }
 
 export default App;

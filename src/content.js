@@ -25,7 +25,7 @@ import heroImage from "./assets/hero.jpg";
 import manualImage from "./assets/manual.jpg";
 import pouchImage from "./assets/pouch.jpg";
 
-export const meeshoUrl = "https://www.meesho.com/s/p/ewd36y?utm_source=s";
+export const instagramUrl = "https://instagram.com/RoboMitra.tech";
 
 export const highlights = [
   {
