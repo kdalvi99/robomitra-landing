@@ -4,8 +4,12 @@ import FadeIn from "../components/FadeIn";
 import GalleryCard from "../components/GalleryCard";
 import Header from "../components/Header";
 import ModelViewerModal from "../components/ModelViewerModal";
+import ProductDetailsModal from "../components/ProductDetailsModal";
 import heroReferenceDarkShot from "../../bec4568b-9ea5-4b72-844e-27d7d9d113f7.png";
 import heroReferenceLightShot from "../../ChatGPT Image May 28, 2026, 01_25_30 PM.png";
+import img899 from "../assets/899rs.jpeg";
+import img1599 from "../assets/1599rs.jpeg";
+import img199 from "../assets/199rs.jpeg";
 import {
   boxContents,
   featureCards,
@@ -20,6 +24,7 @@ function HomePage({ onNavigate, theme, onToggleTheme }) {
   const { dualRobotsImage, fullKitImage, pouchImage } = productImages;
   const heroReferenceShot =
     theme === "light" ? heroReferenceLightShot : heroReferenceDarkShot;
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [is3dOpen, setIs3dOpen] = useState(false);
   const [selectedRating, setSelectedRating] = useState("all");
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -95,6 +100,13 @@ function HomePage({ onNavigate, theme, onToggleTheme }) {
 
   return (
     <div className="page-shell">
+      <ProductDetailsModal 
+        isOpen={!!selectedProduct} 
+        product={selectedProduct} 
+        onClose={() => setSelectedProduct(null)} 
+        instagramUrl={instagramUrl}
+        theme={theme}
+      />
       <Header
         ariaLabel="Primary"
         onNavigate={onNavigate}
@@ -135,6 +147,88 @@ function HomePage({ onNavigate, theme, onToggleTheme }) {
               aria-label="Buy RoboMitra now on Instagram"
             />
           </FadeIn>
+        </section>
+
+        <section className="featured-products-section" style={{ padding: '2rem 1rem 4rem' }}>
+          <div className="product-grid" style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+            gap: '1.5rem',
+            maxWidth: '1200px',
+            margin: '0 auto'
+          }}>
+            {[
+              { 
+                name: "budgetfriend", 
+                image: img899, 
+                price: "₹899", 
+                tag: "Best Seller", 
+                description: "The essential smart buddy for your desk.",
+                longDescription: "The budgetfriend is your perfect entry point into the world of smart desk companions. Crafted with precision, it brings life to your workspace with its expressive OLED eyes and interactive touch responses. It's ideal for students and professionals looking for a distraction-free productivity buddy. Note: To keep this model lightweight and affordable, it is USB-powered only and does not contain an internal battery.",
+                highlights: ["High-resolution OLED eyes", "Real-time touch interaction", "Eco-friendly 3D printed shell", "Compact space-saving design"],
+                specs: ["No Battery (USB Powered)", "Interactive Eyes", "Touch Sensitive", "Handmade Finish"]
+              },
+              { 
+                name: "robomitra r1", 
+                image: img1599, 
+                price: "₹1,599", 
+                tag: "Popular", 
+                description: "Our flagship interactive robot with enhanced expressions.",
+                longDescription: "RoboMitra R1 is our ultimate flagship interactive companion. Beyond the standard interactive features, the R1 is equipped with a high-capacity internal battery, allowing it to stay active even when you're on the move. It features advanced animation algorithms for a wider range of emotional expressions. It's not just a robot; it's a friend that follows you anywhere.",
+                highlights: ["Built-in 500mAh Battery", "Premium matte finish", "Advanced emotional intelligence", "USB-C Fast Charging"],
+                specs: ["Built-in Battery", "2-4 Hours Backup", "Interactive Eyes", "Premium Build", "USB-C Charging"]
+              },
+              { 
+                name: "Head Set", 
+                image: img199, 
+                price: "₹199", 
+                tag: "Accessory", 
+                description: "Stylish headset accessory for your robot. You can apply it directly on your robot buddy.",
+                longDescription: "Give your RoboMitra a unique personality upgrade with our signature Head Set accessory. Precision-engineered to snap perfectly onto both the budgetfriend and R1 models, it adds a touch of modern tech-style to your buddy. It's the perfect way to make your robot stand out on your desk or in photos!",
+                highlights: ["Universal clip-on design", "Durable lightweight material", "Available in multiple colors", "Doesn't block sensors"],
+                specs: ["Universal Fit", "Lightweight Plastic", "Multiple Colors", "Easy to Apply"]
+              }
+            ].map((prod, i) => (
+              <FadeIn key={prod.name} delay={0.1 * (i + 1)}>
+                <div style={{
+                  background: theme === 'light' ? '#fff' : '#1a1a1a',
+                  borderRadius: '24px',
+                  border: `1px solid ${theme === 'light' ? '#e2e8f0' : '#262626'}`,
+                  overflow: 'hidden',
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  boxShadow: theme === 'light' ? '0 10px 15px -3px rgba(0, 0, 0, 0.05)' : '0 10px 15px -3px rgba(0, 0, 0, 0.3)',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease'
+                }} onClick={() => setSelectedProduct(prod)}>
+                  <div style={{ height: '220px', overflow: 'hidden', background: theme === 'light' ? '#f8fafc' : '#262626' }}>
+                    <img src={prod.image} alt={prod.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ marginBottom: '0.5rem' }}>
+                      <span style={{ fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', color: '#3b82f6', letterSpacing: '0.05em' }}>{prod.tag}</span>
+                    </div>
+                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: '700' }}>{prod.name}</h3>
+                    <p style={{ fontSize: '0.85rem', color: theme === 'light' ? '#64748b' : '#a3a3a3', marginBottom: '1.25rem', lineHeight: '1.5' }}>{prod.description}</p>
+                    <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '1.2rem', fontWeight: '900' }}>{prod.price}</span>
+                      <a 
+                        href={`${instagramUrl}?text=${encodeURIComponent(`I want to buy ${prod.name}`)}`} 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        className="primary-button" 
+                        onClick={(e) => e.stopPropagation()}
+                         style={{ padding: '10px 20px', fontSize: '0.85rem', borderRadius: '100px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        Buy Now
+                        <ArrowRight size={14} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
         </section>
 
         <section className="highlights">
