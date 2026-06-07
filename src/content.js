@@ -99,6 +99,12 @@ export const productFeatures = [
 export const galleryShots = [
   {
     image: heroImage,
+    title: "3D Model View",
+    alt: "Open 3D view of RoboMitra model",
+    is3d: true,
+  },
+  {
+    image: heroImage,
     title: "Hero Product Shot",
     alt: "RoboMitra front-facing product photo",
   },
