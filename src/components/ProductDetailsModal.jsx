@@ -167,9 +167,9 @@ const ProductDetailsModal = ({ product, isOpen, onClose, instagramUrl, theme }) 
                   className="primary-button" 
                   style={{ padding: '1.25rem', borderRadius: '100px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', fontWeight: '700' }}
                 >
-                  Order on Instagram <ArrowRight size={20} />
+                  Message on WhatsApp <ArrowRight size={20} />
                 </a>
-                <p style={{ fontSize: '0.75rem', textAlign: 'center', opacity: 0.6 }}>Secure Checkout via DM</p>
+                <p style={{ fontSize: '0.75rem', textAlign: 'center', opacity: 0.6 }}>Order support on WhatsApp</p>
               </div>
             </div>
           </motion.div>
