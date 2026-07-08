@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AboutPage from "./pages/AboutPage";
 import HomePage from "./pages/HomePage";
 import SupportPage from "./pages/SupportPage";
+import AIAssistant from "./components/AIAssistant";
 
 function App() {
   const [pathname, setPathname] = useState(window.location.pathname);
@@ -50,19 +51,26 @@ function App() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
+  let pageContent;
   if (pathname === "/support") {
-    return (
+    pageContent = (
       <SupportPage
         onNavigate={navigateTo}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
     );
-  }
-
-  if (pathname === "/about" || pathname === "/aboutus") {
-    return (
+  } else if (pathname === "/about" || pathname === "/aboutus") {
+    pageContent = (
       <AboutPage
+        onNavigate={navigateTo}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+    );
+  } else {
+    pageContent = (
+      <HomePage
         onNavigate={navigateTo}
         theme={theme}
         onToggleTheme={toggleTheme}
@@ -71,12 +79,12 @@ function App() {
   }
 
   return (
-    <HomePage
-      onNavigate={navigateTo}
-      theme={theme}
-      onToggleTheme={toggleTheme}
-    />
+    <>
+      {pageContent}
+      <AIAssistant />
+    </>
   );
 }
+
 
 export default App;
