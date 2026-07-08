@@ -36,7 +36,7 @@ const products = [
   {
     name: "RoboMitra Keychain White",
     image: keychainWhite,
-    price: "Rs. 899",
+    price: "Rs. 999",
     tag: "New Launch",
     description: "A pocket-sized white RoboMitra keychain with glowing expressive eyes.",
     longDescription:
@@ -52,7 +52,7 @@ const products = [
   {
     name: "RoboMitra Keychain Black",
     image: keychainBlack,
-    price: "Rs. 899",
+    price: "Rs. 999",
     tag: "New Variant",
     description: "A stealth black RoboMitra keychain with a cyber-style animated screen.",
     longDescription:
