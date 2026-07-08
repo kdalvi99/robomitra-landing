@@ -34,13 +34,13 @@ import {
 
 const products = [
   {
-    name: "RoboMitra Keychain White",
+    name: "RoboMitra Mini Companion White",
     image: keychainWhite,
     price: "Rs. 999",
     tag: "New Launch",
-    description: "A pocket-sized white RoboMitra keychain with glowing expressive eyes.",
+    description: "A pocket-sized white RoboMitra companion with glowing expressive eyes.",
     longDescription:
-      "RoboMitra Keychain White brings the companion robot look into a pocket-sized collectible form. It is designed for bags, keys, desks, and gifting with a glossy white body, rechargeable design, and animated blue display.",
+      "RoboMitra Mini Companion White brings the companion robot look into a pocket-sized collectible form. It is designed for bags, keys, desks, and gifting with a glossy white body, rechargeable design, and animated blue display.",
     highlights: [
       "Pocket-sized keychain design",
       "Animated blue display",
@@ -50,13 +50,13 @@ const products = [
     specs: ["Keychain Form", "Animated Display", "Rechargeable", "Interactive", "Pocket-Sized"],
   },
   {
-    name: "RoboMitra Keychain Black",
+    name: "RoboMitra Bag Keychain Black",
     image: keychainBlack,
     price: "Rs. 999",
     tag: "New Variant",
-    description: "A stealth black RoboMitra keychain with a cyber-style animated screen.",
+    description: "A stealth black RoboMitra bag keychain with a cyber-style animated screen.",
     longDescription:
-      "RoboMitra Keychain Black is the darker pocket companion variant with a textured black body, bright blue animated screen, rechargeable power, and a compact keyring form that is easy to carry anywhere.",
+      "RoboMitra Bag Keychain Black is the darker pocket companion variant with a textured black body, bright blue animated screen, rechargeable power, and a compact keyring form that is easy to carry anywhere.",
     highlights: [
       "Stealth black textured body",
       "Animated blue screen",
