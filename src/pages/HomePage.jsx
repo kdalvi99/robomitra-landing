@@ -157,8 +157,8 @@ const trustBadges = [
   },
   {
     icon: Package,
-    title: "1 Year Warranty",
-    desc: "We've got you covered",
+    title: "24/7 Support",
+    desc: "We're always here to help",
   },
 ];
 
