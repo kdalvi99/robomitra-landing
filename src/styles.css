@@ -2815,6 +2815,19 @@ button {
   padding: 32px;
 }
 
+/* Two-column row for first name + surname */
+.cdm-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .cdm-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 .login-form-header, .login-profile-header {
   text-align: center;
   margin-bottom: 24px;

@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePage";
 import SupportPage from "./pages/SupportPage";
 import AIAssistant from "./components/AIAssistant";
 import Cart from "./components/Cart";
-import LoginModal from "./components/LoginModal";
+import CustomerDetailsModal from "./components/CustomerDetailsModal";
 import ContactFloat from "./components/ContactFloat";
 
 function App() {
@@ -20,10 +20,10 @@ function App() {
     }
   });
 
-  // User / login state persisted in localStorage
+  // Customer details persisted in localStorage
   const [user, setUser] = useState(() => {
     try {
-      const saved = localStorage.getItem("robomitra_user");
+      const saved = localStorage.getItem("robomitra_customer");
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
@@ -39,12 +39,12 @@ function App() {
     localStorage.setItem("robomitra_cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Sync user with localStorage
+  // Sync customer with localStorage
   useEffect(() => {
     if (user) {
-      localStorage.setItem("robomitra_user", JSON.stringify(user));
+      localStorage.setItem("robomitra_customer", JSON.stringify(user));
     } else {
-      localStorage.removeItem("robomitra_user");
+      localStorage.removeItem("robomitra_customer");
     }
   }, [user]);
 
@@ -144,7 +144,7 @@ function App() {
       {pageContent}
       <AIAssistant />
       <ContactFloat />
-      <LoginModal
+      <CustomerDetailsModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
         user={user}

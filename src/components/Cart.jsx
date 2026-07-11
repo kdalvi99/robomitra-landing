@@ -18,35 +18,35 @@ export default function Cart({
     0
   );
 
-  const formatCurrency = (val) => {
-    return new Intl.NumberFormat("en-IN", {
+  const formatCurrency = (val) =>
+    new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
       maximumFractionDigits: 0,
     }).format(val);
-  };
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
-    let message = "Hello RoboMitra! 👋 I would like to place an order:\n\n";
+    // Build product list
+    const productLines = cartItems
+      .map((item) => `  • ${item.quantity}x ${item.name} ${item.nameHighlight || ""} — ${item.price} each`)
+      .join("\n");
 
-    // Order items
-    message += "🛒 *Order Details:*\n";
-    cartItems.forEach((item) => {
-      message += `  • ${item.quantity}x ${item.name} ${item.nameHighlight || ""} — ${item.price} each\n`;
-    });
-    message += `\n💰 *Total Amount:* ${formatCurrency(subtotal)}\n`;
+    let message = `Hello RoboMitra! 👋 I would like to place an order.\n\n`;
 
-    // Customer details if logged in
+    message += `🛒 *Order Details:*\n${productLines}\n\n`;
+    message += `💰 *Total Amount:* ${formatCurrency(subtotal)}\n`;
+
     if (user) {
-      message += `\n👤 *Customer Details:*\n`;
-      message += `  Name: ${user.name}\n`;
-      if (user.email) message += `  Email: ${user.email}\n`;
-      message += `\n📦 *Shipping Address:*\n  ${user.address}\n`;
+      const fullName = user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim();
+      message += `\n👤 *Customer Name:* ${fullName}\n`;
+      message += `📦 *Delivery Address:*\n  ${user.address}\n`;
+    } else {
+      message += `\n📦 *(Please share your name and delivery address so we can process the order)*\n`;
     }
 
-    message += "\nPlease confirm my order and share payment details! 😊";
+    message += `\nPlease confirm my order and share payment details! 😊`;
 
     const finalUrl = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
     window.open(finalUrl, "_blank", "noopener,noreferrer");
@@ -56,7 +56,7 @@ export default function Cart({
     <AnimatePresence>
       {isOpen && (
         <div className="cart-overlay-wrapper">
-          {/* Backdrop Overlay */}
+          {/* Backdrop */}
           <motion.div
             className="cart-backdrop"
             initial={{ opacity: 0 }}
@@ -65,7 +65,7 @@ export default function Cart({
             onClick={onClose}
           />
 
-          {/* Drawer Panel */}
+          {/* Drawer */}
           <motion.div
             className="cart-drawer"
             initial={{ x: "100%" }}
@@ -84,7 +84,7 @@ export default function Cart({
               </button>
             </div>
 
-            {/* Cart Items List */}
+            {/* Items */}
             <div className="cart-items-body">
               {cartItems.length === 0 ? (
                 <div className="cart-empty-state">
@@ -111,20 +111,13 @@ export default function Cart({
                           </button>
                         </div>
                         <p className="cart-item-price">{item.price}</p>
-
                         <div className="cart-item-actions">
                           <div className="cart-qty-selector">
-                            <button
-                              onClick={() => onUpdateQuantity(item.id, -1)}
-                              aria-label="Decrease quantity"
-                            >
+                            <button onClick={() => onUpdateQuantity(item.id, -1)} aria-label="Decrease">
                               <Minus size={12} />
                             </button>
                             <span>{item.quantity}</span>
-                            <button
-                              onClick={() => onUpdateQuantity(item.id, 1)}
-                              aria-label="Increase quantity"
-                            >
+                            <button onClick={() => onUpdateQuantity(item.id, 1)} aria-label="Increase">
                               <Plus size={12} />
                             </button>
                           </div>
@@ -139,15 +132,16 @@ export default function Cart({
               )}
             </div>
 
-            {/* Footer Summary & Checkout */}
+            {/* Footer */}
             {cartItems.length > 0 && (
               <div className="cart-footer">
-                {/* Address Status Banner */}
+                {/* Address Banner */}
                 {user ? (
                   <div className="cart-shipping-success">
                     <CheckCircle size={16} style={{ flexShrink: 0 }} />
                     <span>
-                      <strong>{user.name}</strong> — delivering to: {user.address.split(",")[0]}…
+                      <strong>{user.firstName || user.name?.split(" ")[0]}</strong> — delivering to:{" "}
+                      {user.address.split(",")[0]}…
                     </span>
                   </div>
                 ) : (
@@ -167,9 +161,9 @@ export default function Cart({
                           fontSize: "inherit",
                         }}
                       >
-                        Add your address
+                        Add your name &amp; address
                       </button>{" "}
-                      to include delivery details in your order.
+                      to include delivery details in your WhatsApp order.
                     </span>
                   </div>
                 )}
@@ -178,7 +172,9 @@ export default function Cart({
                   <span>Subtotal</span>
                   <span className="cart-subtotal-price">{formatCurrency(subtotal)}</span>
                 </div>
-                <p className="cart-shipping-notice">Shipping calculated at checkout. Orders processed via WhatsApp.</p>
+                <p className="cart-shipping-notice">
+                  Shipping calculated at checkout. Orders processed via WhatsApp.
+                </p>
 
                 <button className="cart-checkout-btn" onClick={handleCheckout}>
                   Proceed to Checkout on WhatsApp
