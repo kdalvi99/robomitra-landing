@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import FadeIn from "../components/FadeIn";
 import { supportFaqs } from "../content";
 
-function SupportPage({ onNavigate, cartCount, onCartClick }) {
+function SupportPage({ onNavigate, cartCount, onCartClick, user, onLoginClick }) {
   return (
     <div className="page-shell support-shell">
       <Header
@@ -14,6 +14,8 @@ function SupportPage({ onNavigate, cartCount, onCartClick }) {
         links={[]}
         cartCount={cartCount}
         onCartClick={onCartClick}
+        user={user}
+        onLoginClick={onLoginClick}
       />
 
       <main style={{ maxWidth: 960, margin: "0 auto", padding: "48px 24px" }}>

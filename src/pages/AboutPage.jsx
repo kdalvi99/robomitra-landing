@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import FadeIn from "../components/FadeIn";
 import { aboutPoints } from "../content";
 
-function AboutPage({ onNavigate, cartCount, onCartClick }) {
+function AboutPage({ onNavigate, cartCount, onCartClick, user, onLoginClick }) {
   return (
     <div className="page-shell">
       <Header
@@ -14,6 +14,8 @@ function AboutPage({ onNavigate, cartCount, onCartClick }) {
         links={[]}
         cartCount={cartCount}
         onCartClick={onCartClick}
+        user={user}
+        onLoginClick={onLoginClick}
       />
 
       <main className="support-main">

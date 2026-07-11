@@ -169,7 +169,7 @@ const trustStrip = [
   { icon: Zap, title: "Innovative", desc: "& Fun" },
 ];
 
-function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery = "", onSearchChange }) {
+function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery = "", onSearchChange, user, onLoginClick }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [is3dOpen, setIs3dOpen] = useState(false);
 
@@ -212,6 +212,8 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
         onCartClick={onCartClick}
         searchQuery={searchQuery}
         onSearchChange={onSearchChange}
+        user={user}
+        onLoginClick={onLoginClick}
       />
 
       <main>
