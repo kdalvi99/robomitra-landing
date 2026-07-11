@@ -1,9 +1,24 @@
-import { Menu, ShoppingCart, User, X, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Menu, ShoppingCart, User, X, Search, ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { fuzzySearch } from "../utils/fuzzySearch";
 
-function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, onCartClick, searchQuery = "", onSearchChange, user, onLoginClick }) {
+function Header({
+  links,
+  ariaLabel,
+  onNavigate,
+  isHome = false,
+  cartCount = 0,
+  onCartClick,
+  searchQuery = "",
+  onSearchChange,
+  user,
+  onLoginClick,
+  products = [],
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -13,6 +28,17 @@ function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, o
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   const handleInternalNavigation = (event, href) => {
     event.preventDefault();
@@ -30,6 +56,24 @@ function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, o
     { href: "/support", label: "Support" },
     { href: "#products", label: "Contact" },
   ];
+
+  const { exact, fuzzy, didYouMean } = fuzzySearch(products, searchQuery);
+  const dropdownResults = [...exact, ...fuzzy].slice(0, 5);
+  const isFuzzyOnly = exact.length === 0 && fuzzy.length > 0;
+  const showDropdown = dropdownOpen && searchQuery.trim().length > 0;
+
+  function handleProductClick(product) {
+    setDropdownOpen(false);
+    setSearchExpanded(false);
+    onSearchChange("");
+    // Scroll to products section if on home
+    const el = document.getElementById("products");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function handleDidYouMean(word) {
+    onSearchChange(word);
+  }
 
   return (
     <header className="topbar">
@@ -85,37 +129,115 @@ function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, o
 
         {/* Right Icons */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {searchExpanded ? (
-            <div className="nav-search-wrapper" style={{ display: "flex", alignItems: "center", background: "#f1f5f9", borderRadius: "20px", padding: "4px 12px", border: "1px solid #e2e8f0" }}>
-              <Search size={14} style={{ color: "#64748b", marginRight: "6px" }} />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => onSearchChange(e.target.value)}
-                style={{ border: "none", background: "transparent", outline: "none", fontSize: "0.85rem", width: "90px", color: "var(--text)" }}
-                autoFocus
-              />
+          {/* Search with Dropdown */}
+          <div ref={searchRef} className="nav-search-root">
+            {searchExpanded ? (
+              <div className="nav-search-expanded">
+                <div className="nav-search-bar">
+                  <Search size={14} className="nav-search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search robots…"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      onSearchChange(e.target.value);
+                      setDropdownOpen(true);
+                    }}
+                    onFocus={() => setDropdownOpen(true)}
+                    className="nav-search-input"
+                    autoFocus
+                    aria-label="Search products"
+                  />
+                  <button
+                    className="nav-search-clear"
+                    onClick={() => {
+                      setSearchExpanded(false);
+                      setDropdownOpen(false);
+                      onSearchChange("");
+                    }}
+                    aria-label="Close search"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+
+                {/* Dropdown Results */}
+                {showDropdown && (
+                  <div className="search-dropdown" role="listbox" aria-label="Search results">
+                    {dropdownResults.length > 0 ? (
+                      <>
+                        {isFuzzyOnly && (
+                          <p className="search-dropdown-notice">
+                            🔍 Showing closest matches
+                          </p>
+                        )}
+                        {dropdownResults.map((product) => (
+                          <button
+                            key={product.id}
+                            className="search-dropdown-item"
+                            role="option"
+                            onClick={() => handleProductClick(product)}
+                          >
+                            <img
+                              src={product.image}
+                              alt={product.nameHighlight}
+                              className="search-dropdown-img"
+                            />
+                            <div className="search-dropdown-info">
+                              <span className="search-dropdown-name">
+                                {product.name} <strong>{product.nameHighlight}</strong>
+                              </span>
+                              <span className="search-dropdown-tag">{product.tagline}</span>
+                            </div>
+                            <span className="search-dropdown-price">{product.price}</span>
+                            <ArrowRight size={14} className="search-dropdown-arrow" />
+                          </button>
+                        ))}
+                        {didYouMean && exact.length === 0 && (
+                          <div className="search-dropdown-dym">
+                            Did you mean&nbsp;
+                            <button
+                              className="search-dym-btn"
+                              onClick={() => handleDidYouMean(didYouMean)}
+                            >
+                              "{didYouMean}"
+                            </button>
+                            ?
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="search-dropdown-empty">
+                        <p className="search-dropdown-empty-title">No robots found for "{searchQuery}"</p>
+                        {didYouMean && (
+                          <p className="search-dropdown-empty-dym">
+                            Did you mean&nbsp;
+                            <button
+                              className="search-dym-btn"
+                              onClick={() => handleDidYouMean(didYouMean)}
+                            >
+                              "{didYouMean}"
+                            </button>
+                            ?
+                          </p>
+                        )}
+                        <p className="search-dropdown-hint">Try "Alex", "Andy" or "R1"</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
               <button
-                onClick={() => {
-                  setSearchExpanded(false);
-                  onSearchChange("");
-                }}
-                style={{ border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", color: "#64748b", padding: "2px" }}
+                className="navbar-icon-btn"
+                aria-label="Search"
+                type="button"
+                onClick={() => setSearchExpanded(true)}
               >
-                <X size={14} />
+                <Search size={18} />
               </button>
-            </div>
-          ) : (
-            <button
-              className="navbar-icon-btn"
-              aria-label="Search"
-              type="button"
-              onClick={() => setSearchExpanded(true)}
-            >
-              <Search size={18} />
-            </button>
-          )}
+            )}
+          </div>
 
           <div className="navbar-icons">
             <button

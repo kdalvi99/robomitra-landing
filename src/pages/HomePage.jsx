@@ -214,6 +214,7 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
         onSearchChange={onSearchChange}
         user={user}
         onLoginClick={onLoginClick}
+        products={shopProducts}
       />
 
       <main>
