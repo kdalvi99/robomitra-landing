@@ -2924,11 +2924,11 @@ button {
 .contact-float-root {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 24px;
   z-index: 1100;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 12px;
 }
 
@@ -3110,7 +3110,7 @@ button {
 @media (max-width: 480px) {
   .contact-float-root {
     bottom: 16px;
-    right: 12px;
+    left: 12px;
   }
   .contact-float-label {
     display: none;
