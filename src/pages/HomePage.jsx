@@ -204,18 +204,16 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick }) {
 
       <main>
         {/* ── HERO ── */}
-        <section className="rm-hero" id="home" style={{ padding: "32px 0 16px 0", background: '#fff' }}>
-          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
-            <FadeIn delay={0.05}>
-              <a href={whatsappUrl} target="_blank" rel="noreferrer" style={{ display: 'block' }}>
-                <img
-                  src={heroImg}
-                  alt="Meet RoboMitra R1 - Smart. Cute. Interactive."
-                  style={{ width: "100%", height: "auto", display: "block" }}
-                />
-              </a>
-            </FadeIn>
-          </div>
+        <section className="rm-hero" id="home" style={{ padding: 0, background: '#fff', width: '100%' }}>
+          <FadeIn delay={0.05}>
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" style={{ display: 'block', width: '100%' }}>
+              <img
+                src={heroImg}
+                alt="Meet RoboMitra R1 - Smart. Cute. Interactive."
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
+            </a>
+          </FadeIn>
         </section>
 
         {/* ── WHY CHOOSE ROBOMITRA ── */}
