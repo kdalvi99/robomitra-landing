@@ -2824,3 +2824,97 @@ button {
   font-weight: 500;
   line-height: 1.4;
 }
+
+/* =============================================
+   LOGIN MODAL — EXTENDED ELEMENTS
+   ============================================= */
+
+/* Password input with eye toggle */
+.login-pass-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-pass-wrap input {
+  width: 100%;
+  padding-right: 38px !important;
+}
+
+.login-eye-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  transition: color var(--transition);
+}
+
+.login-eye-btn:hover {
+  color: var(--blue);
+}
+
+/* Inline field validation errors */
+.login-field-error {
+  font-size: 0.73rem;
+  color: var(--red, #ef4444);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Red error banner (wrong password etc.) */
+.login-error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  line-height: 1.4;
+}
+
+/* Green success banner (account created / welcome back) */
+.login-success-banner {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+/* Switch between Sign Up / Log In */
+.login-switch-text {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+
+.login-switch-btn {
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: inherit;
+  text-decoration: underline;
+  padding: 0;
+  transition: opacity var(--transition);
+}
+
+.login-switch-btn:hover {
+  opacity: 0.75;
+}
+
