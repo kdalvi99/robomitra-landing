@@ -5,6 +5,7 @@ import SupportPage from "./pages/SupportPage";
 import AIAssistant from "./components/AIAssistant";
 import Cart from "./components/Cart";
 import LoginModal from "./components/LoginModal";
+import ContactFloat from "./components/ContactFloat";
 
 function App() {
   const [pathname, setPathname] = useState(window.location.pathname);
@@ -142,6 +143,7 @@ function App() {
     <>
       {pageContent}
       <AIAssistant />
+      <ContactFloat />
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
