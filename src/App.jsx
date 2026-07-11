@@ -4,10 +4,11 @@ import HomePage from "./pages/HomePage";
 import SupportPage from "./pages/SupportPage";
 import AIAssistant from "./components/AIAssistant";
 import Cart from "./components/Cart";
+import LoginModal from "./components/LoginModal";
 
 function App() {
   const [pathname, setPathname] = useState(window.location.pathname);
-  
+
   // Cart state loaded from localStorage if exists
   const [cart, setCart] = useState(() => {
     try {
@@ -17,8 +18,19 @@ function App() {
       return [];
     }
   });
-  
+
+  // User / login state persisted in localStorage
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("robomitra_user");
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
@@ -26,19 +38,30 @@ function App() {
     localStorage.setItem("robomitra_cart", JSON.stringify(cart));
   }, [cart]);
 
+  // Sync user with localStorage
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("robomitra_user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("robomitra_user");
+    }
+  }, [user]);
+
+  const handleSaveUser = (userData) => {
+    setUser(userData);
+    if (userData) setIsLoginOpen(false);
+  };
+
   const addToCart = (product) => {
     setCart((prevCart) => {
-      // Find if item already exists
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
         return prevCart.map((item) =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
-      // Otherwise add new item
       return [...prevCart, { ...product, quantity: 1 }];
     });
-    // Open cart drawer immediately for visual feedback
     setIsCartOpen(true);
   };
 
@@ -75,15 +98,12 @@ function App() {
         });
         return;
       }
-
       const target = document.querySelector(href);
       target?.scrollIntoView({ behavior: "smooth" });
       return;
     }
 
-    if (href === window.location.pathname) {
-      return;
-    }
+    if (href === window.location.pathname) return;
 
     window.history.pushState({}, "", href);
     setPathname(href);
@@ -97,48 +117,37 @@ function App() {
   }, []);
 
   const totalCartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const sharedProps = {
+    onNavigate: navigateTo,
+    cartCount: totalCartCount,
+    onCartClick: () => setIsCartOpen(true),
+    onLoginClick: () => setIsLoginOpen(true),
+    user,
+    searchQuery,
+    onSearchChange: setSearchQuery,
+  };
 
   let pageContent;
   if (pathname === "/support") {
-    pageContent = (
-      <SupportPage
-        onNavigate={navigateTo}
-        cartCount={totalCartCount}
-        onCartClick={() => setIsCartOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-    );
+    pageContent = <SupportPage {...sharedProps} />;
   } else if (pathname === "/about" || pathname === "/aboutus") {
-    pageContent = (
-      <AboutPage
-        onNavigate={navigateTo}
-        cartCount={totalCartCount}
-        onCartClick={() => setIsCartOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-    );
+    pageContent = <AboutPage {...sharedProps} />;
   } else {
-    pageContent = (
-      <HomePage
-        onNavigate={navigateTo}
-        cartCount={totalCartCount}
-        onCartClick={() => setIsCartOpen(true)}
-        onAddToCart={addToCart}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
-    );
+    pageContent = <HomePage {...sharedProps} onAddToCart={addToCart} />;
   }
 
-  // The base WhatsApp contact number used across the site
   const whatsappUrl = "https://wa.me/917977473538";
 
   return (
     <>
       {pageContent}
       <AIAssistant />
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        user={user}
+        onSaveUser={handleSaveUser}
+      />
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -147,9 +156,13 @@ function App() {
         onRemoveItem={removeFromCart}
         onClearCart={clearCart}
         whatsappUrl={whatsappUrl}
+        user={user}
+        onLoginClick={() => setIsLoginOpen(true)}
       />
     </>
   );
 }
 
 export default App;
+
+

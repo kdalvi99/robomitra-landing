@@ -1,7 +1,7 @@
 import { Menu, ShoppingCart, User, X, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, onCartClick, searchQuery = "", onSearchChange }) {
+function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, onCartClick, searchQuery = "", onSearchChange, user, onLoginClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
 
@@ -118,8 +118,15 @@ function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, o
           )}
 
           <div className="navbar-icons">
-            <button className="navbar-icon-btn" aria-label="Account" type="button">
+            <button
+              className="navbar-icon-btn"
+              aria-label={user ? `Logged in as ${user.name}` : "Login / Account"}
+              type="button"
+              onClick={onLoginClick}
+              style={{ position: "relative" }}
+            >
               <User size={18} />
+              {user && <span className="user-indicator-dot" />}
             </button>
           </div>
 

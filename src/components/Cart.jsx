@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
 import React from "react";
 
 export default function Cart({
@@ -10,6 +10,8 @@ export default function Cart({
   onRemoveItem,
   onClearCart,
   whatsappUrl,
+  user,
+  onLoginClick,
 }) {
   const subtotal = cartItems.reduce(
     (acc, item) => acc + parseFloat(item.price.replace(/[^\d]/g, "")) * item.quantity,
@@ -27,12 +29,24 @@ export default function Cart({
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
-    let message = "Hello RoboMitra! 👋 I would like to place an order:\n";
+    let message = "Hello RoboMitra! 👋 I would like to place an order:\n\n";
+
+    // Order items
+    message += "🛒 *Order Details:*\n";
     cartItems.forEach((item) => {
-      message += `- ${item.quantity}x ${item.name} (${item.price} each)\n`;
+      message += `  • ${item.quantity}x ${item.name} ${item.nameHighlight || ""} — ${item.price} each\n`;
     });
-    message += `\nTotal Amount: ${formatCurrency(subtotal)}\n`;
-    message += "Please confirm my order and share payment details! 😊";
+    message += `\n💰 *Total Amount:* ${formatCurrency(subtotal)}\n`;
+
+    // Customer details if logged in
+    if (user) {
+      message += `\n👤 *Customer Details:*\n`;
+      message += `  Name: ${user.name}\n`;
+      if (user.email) message += `  Email: ${user.email}\n`;
+      message += `\n📦 *Shipping Address:*\n  ${user.address}\n`;
+    }
+
+    message += "\nPlease confirm my order and share payment details! 😊";
 
     const finalUrl = `${whatsappUrl}?text=${encodeURIComponent(message)}`;
     window.open(finalUrl, "_blank", "noopener,noreferrer");
@@ -87,7 +101,7 @@ export default function Cart({
                       <img src={item.image} alt={item.name} className="cart-item-img" />
                       <div className="cart-item-details">
                         <div className="cart-item-header">
-                          <h4>{item.name}</h4>
+                          <h4>{item.name} {item.nameHighlight}</h4>
                           <button
                             className="cart-item-remove"
                             onClick={() => onRemoveItem(item.id)}
@@ -97,7 +111,7 @@ export default function Cart({
                           </button>
                         </div>
                         <p className="cart-item-price">{item.price}</p>
-                        
+
                         <div className="cart-item-actions">
                           <div className="cart-qty-selector">
                             <button
@@ -114,7 +128,6 @@ export default function Cart({
                               <Plus size={12} />
                             </button>
                           </div>
-                          
                           <span className="cart-item-total">
                             {formatCurrency(parseFloat(item.price.replace(/[^\d]/g, "")) * item.quantity)}
                           </span>
@@ -129,12 +142,44 @@ export default function Cart({
             {/* Footer Summary & Checkout */}
             {cartItems.length > 0 && (
               <div className="cart-footer">
+                {/* Address Status Banner */}
+                {user ? (
+                  <div className="cart-shipping-success">
+                    <CheckCircle size={16} style={{ flexShrink: 0 }} />
+                    <span>
+                      <strong>{user.name}</strong> — delivering to: {user.address.split(",")[0]}…
+                    </span>
+                  </div>
+                ) : (
+                  <div className="cart-shipping-warning">
+                    <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                    <span>
+                      <button
+                        onClick={onLoginClick}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          color: "#b45309",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          textDecoration: "underline",
+                          padding: 0,
+                          fontSize: "inherit",
+                        }}
+                      >
+                        Add your address
+                      </button>{" "}
+                      to include delivery details in your order.
+                    </span>
+                  </div>
+                )}
+
                 <div className="cart-summary-row">
                   <span>Subtotal</span>
                   <span className="cart-subtotal-price">{formatCurrency(subtotal)}</span>
                 </div>
                 <p className="cart-shipping-notice">Shipping calculated at checkout. Orders processed via WhatsApp.</p>
-                
+
                 <button className="cart-checkout-btn" onClick={handleCheckout}>
                   Proceed to Checkout on WhatsApp
                   <ArrowRight size={18} />
