@@ -136,6 +136,65 @@ export default function AIAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
+  const fetchAIResponse = async (chatHistory) => {
+    try {
+      const systemPrompt = `You are the official RoboMitra AI Assistant, a friendly and smart companion chatbot for the RoboMitra website.
+You must answer questions about RoboMitra products, ordering, shipping, and support using the following official details:
+
+Catalog & Pricing:
+- RoboMitra R1 (Flagship desk buddy): Rs. 1,599. White casing, rechargeable 500mAh internal battery (2-4 hours backup, Type-C charging), expressive animated OLED eyes, touch control, buzzer sounds/beeps, BLE robot communication, mini-games (Flappy, Dino).
+- RoboMitra Mini Companion White: Rs. 999. Glossy white pocket-sized keychain design, rechargeable, animated blue display.
+- RoboMitra Bag Keychain Black: Rs. 999. Stealth black textured pocket-sized keychain design, rechargeable, animated blue display.
+
+How to Buy:
+- Customers can buy by clicking 'Buy Now' or 'Order Now' which redirects them to our official Instagram page where they can order via Direct Message (DM). We accept secure UPI payments.
+
+Shipping & Delivery:
+- Shipping time: Metro cities: 2-4 business days. Other regions: 4-7 business days. Custom orders require 3 extra days for assembly.
+- Tracking links are emailed within 24-48 hours of shipping.
+- Delivery address can be changed within 12 hours of ordering by emailing robomitra@zohomail.in or messaging our Instagram DM.
+
+Troubleshooting & Support:
+- Charging: Use the provided USB-C cable and a 5V 1A adapter. Avoid high-wattage fast chargers. Takes 45 minutes. Solid blue display means fully charged.
+- Reset: Use a paperclip to press the reset pinhole next to the USB-C port for 3 seconds.
+- Email: robomitra@zohomail.in (Include order ID, issue details, and a video/photo).
+
+Guidelines:
+- Keep your answers concise, friendly, and human-like.
+- Use emojis where appropriate to keep it fun and engaging.
+- You can also answer general knowledge questions, write code, or tell jokes, just like a real AI. Keep those answers concise too.
+- If asked about ordering, always encourage them to click the buttons or message us on Instagram DM.`;
+
+      // Get the last user message
+      const lastUserMsg = chatHistory[chatHistory.length - 1]?.text || "Hello";
+
+      // Format conversation history (up to last 4 messages) to feed as context
+      const contextHistory = chatHistory
+        .slice(-5, -1) // Exclude current message
+        .map((msg) => `${msg.sender === "user" ? "User" : "Assistant"}: ${msg.text}`)
+        .join("\n");
+
+      // Construct final prompt with context
+      const prompt = contextHistory
+        ? `${contextHistory}\nUser: ${lastUserMsg}`
+        : lastUserMsg;
+
+      const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}?system=${encodeURIComponent(systemPrompt)}&model=openai`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("API call failed");
+      }
+
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error("AI Assistant API error:", error);
+      return null;
+    }
+  };
+
   const getMatchedTopicValue = (text) => {
     const cleanVal = text.toLowerCase();
     
@@ -214,7 +273,30 @@ export default function AIAssistant() {
     return "fallback";
   };
 
-  const handleSelectOption = (value, label) => {
+  const handleSelectOption = async (value, label) => {
+    if (value === "main") {
+      const userMsg = {
+        id: Math.random().toString(),
+        sender: "user",
+        text: label,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      setIsTyping(true);
+      setTimeout(() => {
+        const aiMsg = {
+          id: Math.random().toString(),
+          sender: "ai",
+          text: "Returned to main menu. How can I help you?",
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        };
+        setMessages((prev) => [...prev, aiMsg]);
+        setCurrentTopic("main");
+        setIsTyping(false);
+      }, 800);
+      return;
+    }
+
     // Add user message
     const userMsg = {
       id: Math.random().toString(),
@@ -223,11 +305,24 @@ export default function AIAssistant() {
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setIsTyping(true);
 
-    // Simulate AI thinking and typing response
-    setTimeout(() => {
+    const aiText = await fetchAIResponse(newMessages);
+
+    if (aiText) {
+      const aiMsg = {
+        id: Math.random().toString(),
+        sender: "ai",
+        text: aiText,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, aiMsg]);
+      setCurrentTopic(value);
+      setIsTyping(false);
+    } else {
+      // Fallback
       const topic = topicData[value] || topicData["main"];
       const aiMsg = {
         id: Math.random().toString(),
@@ -238,10 +333,10 @@ export default function AIAssistant() {
       setMessages((prev) => [...prev, aiMsg]);
       setCurrentTopic(value);
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
-  const handleSendMessage = (text) => {
+  const handleSendMessage = async (text) => {
     if (!text.trim()) return;
 
     // Add user message
@@ -252,25 +347,37 @@ export default function AIAssistant() {
       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
+    const newMessages = [...messages, userMsg];
+    setMessages(newMessages);
     setInputVal("");
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    const aiText = await fetchAIResponse(newMessages);
+
+    if (aiText) {
+      const aiMsg = {
+        id: Math.random().toString(),
+        sender: "ai",
+        text: aiText,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+      setMessages((prev) => [...prev, aiMsg]);
+      setIsTyping(false);
+    } else {
+      // Local fallback
       const matchedValue = getMatchedTopicValue(text);
       const topic = topicData[matchedValue];
       
       const aiMsg = {
         id: Math.random().toString(),
         sender: "ai",
-        text: topic.response,
+        text: topic.response || topicData["fallback"].response,
         time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, aiMsg]);
       setCurrentTopic(matchedValue);
       setIsTyping(false);
-    }, 1200);
+    }
   };
 
   // Scroll to bottom whenever messages or typing state changes

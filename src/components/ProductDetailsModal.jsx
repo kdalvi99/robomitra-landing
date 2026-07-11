@@ -2,7 +2,7 @@ import React from 'react';
 import { X, ArrowRight, Zap, Truck, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ProductDetailsModal = ({ product, isOpen, onClose, instagramUrl, theme }) => {
+const ProductDetailsModal = ({ product, isOpen, onClose, instagramUrl, theme, onAddToCart }) => {
   return (
     <AnimatePresence>
       {isOpen && product && (
@@ -160,16 +160,17 @@ const ProductDetailsModal = ({ product, isOpen, onClose, instagramUrl, theme }) 
               </div>
 
               <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <a 
-                  href={`${instagramUrl}?text=${encodeURIComponent(`I want to buy ${product.name}`)}`}
-                  target="_blank" 
-                  rel="noreferrer" 
+                <button 
+                  onClick={() => {
+                    onAddToCart(product);
+                    onClose();
+                  }}
                   className="primary-button" 
-                  style={{ padding: '1.25rem', borderRadius: '100px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', fontWeight: '700' }}
+                  style={{ padding: '1.25rem', borderRadius: '100px', textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontSize: '1rem', fontWeight: '700', border: 'none', cursor: 'pointer' }}
                 >
-                  Message on WhatsApp <ArrowRight size={20} />
-                </a>
-                <p style={{ fontSize: '0.75rem', textAlign: 'center', opacity: 0.6 }}>Order support on WhatsApp</p>
+                  Add to Cart <ArrowRight size={20} />
+                </button>
+                <p style={{ fontSize: '0.75rem', textAlign: 'center', opacity: 0.6 }}>Add to cart and checkout on WhatsApp</p>
               </div>
             </div>
           </motion.div>

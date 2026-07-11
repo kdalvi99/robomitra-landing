@@ -1,21 +1,19 @@
 import { Heart, Sparkles } from "lucide-react";
 import Header from "../components/Header";
 import FadeIn from "../components/FadeIn";
-import { aboutPoints, instagramUrl } from "../content";
+import { aboutPoints } from "../content";
 
-function AboutPage({ onNavigate, theme, onToggleTheme }) {
+function AboutPage({ onNavigate, cartCount, onCartClick }) {
   return (
-    <div className="page-shell support-shell">
+    <div className="page-shell">
       <Header
         ariaLabel="About navigation"
         onNavigate={onNavigate}
-        theme={theme}
-        onToggleTheme={onToggleTheme}
-        links={[
-          { href: "/", label: "Home" },
-          { href: "/support", label: "Support" },
-          { href: instagramUrl, label: "Buy Now", external: true },
-        ]}
+        theme="light"
+        onToggleTheme={() => {}}
+        links={[]}
+        cartCount={cartCount}
+        onCartClick={onCartClick}
       />
 
       <main className="support-main">
