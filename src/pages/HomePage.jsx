@@ -240,26 +240,24 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick }) {
         </section>
 
         {/* ── DARK PRODUCT BANNER ── */}
-        <section className="rm-product-banner" style={{ background: '#000', padding: 0 }}>
-          <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', position: 'relative' }}>
-            <FadeIn delay={0.08}>
-              <div style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
-                <img
-                  src={mainsecondImg}
-                  alt="RoboMitra R1 Product Specifications"
-                  style={{ width: "100%", height: "auto", display: "block" }}
-                />
-                <button
-                  className="rm-banner-overlay-btn"
-                  type="button"
-                  onClick={() => onAddToCart(shopProducts[0])}
-                  title="Add to Cart - RoboMitra R1"
-                  aria-label="Add RoboMitra R1 to Cart"
-                  style={{ border: 'none', cursor: 'pointer' }}
-                />
-              </div>
-            </FadeIn>
-          </div>
+        <section className="rm-product-banner" aria-label="RoboMitra specifications" style={{ padding: 0 }}>
+          <FadeIn delay={0.08}>
+            <div style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
+              <img
+                src={mainsecondImg}
+                alt="RoboMitra R1 Product Specifications"
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
+              <button
+                className="rm-banner-overlay-btn"
+                type="button"
+                onClick={() => onAddToCart(shopProducts[0])}
+                title="Add to Cart - RoboMitra R1"
+                aria-label="Add RoboMitra R1 to Cart"
+                style={{ border: 'none', cursor: 'pointer' }}
+              />
+            </div>
+          </FadeIn>
         </section>
 
         {/* ── EXPLORE ROBOTS ── */}
