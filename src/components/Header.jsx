@@ -1,4 +1,4 @@
-import { Menu, ShoppingCart, User, X, Search, ArrowRight } from "lucide-react";
+import { Menu, ShoppingCart, User, X, Search, ArrowRight, Home, Zap, ShoppingBag, Info, Headphones, Phone, Instagram } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { fuzzySearch } from "../utils/fuzzySearch";
 
@@ -57,6 +57,14 @@ function Header({
     { href: "#products", label: "Contact" },
   ];
 
+  const navLinksWithIcons = [
+    { href: "#home",     label: "Home",     Icon: Home },
+    { href: "#features", label: "Features",  Icon: Zap },
+    { href: "#products", label: "Shop",      Icon: ShoppingBag },
+    { href: "/about",    label: "About Us",  Icon: Info },
+    { href: "/support",  label: "Support",   Icon: Headphones },
+    { href: "#products", label: "Contact",   Icon: Phone },
+  ];
   const { exact, fuzzy, didYouMean } = fuzzySearch(products, searchQuery);
   const dropdownResults = [...exact, ...fuzzy].slice(0, 5);
   const isFuzzyOnly = exact.length === 0 && fuzzy.length > 0;
@@ -98,33 +106,65 @@ function Header({
           </span>
         </a>
 
-        {/* Nav Links */}
+        {/* Nav Links – mobile full-screen menu */}
         <nav
           id="primary-navigation"
           className={`nav-links ${menuOpen ? "nav-links-open" : ""}`}
           aria-label={ariaLabel}
         >
-          {menuOpen && (
+          {/* Menu Header: Brand + Close */}
+          <div className="mobile-menu-header">
+            <span className="brand-text-logo" style={{ fontSize: "1.3rem" }}>
+              Robo<span>Mitra</span>
+            </span>
             <button
               type="button"
-              className="menu-toggle"
-              style={{ position: "absolute", top: 20, right: 20 }}
+              className="mobile-menu-close-btn"
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
             >
-              <X size={20} />
+              <X size={22} />
             </button>
-          )}
-          {navLinks.map(({ href, label }) => (
-            <a
-              key={`${href}-${label}`}
-              className="nav-link"
-              href={href}
-              onClick={(e) => handleInternalNavigation(e, href)}
-            >
-              {label}
-            </a>
-          ))}
+          </div>
+
+          {/* Nav Links */}
+          <div className="mobile-menu-links">
+            {navLinksWithIcons.map(({ href, label, Icon }) => (
+              <a
+                key={`${href}-${label}`}
+                className="nav-link"
+                href={href}
+                onClick={(e) => handleInternalNavigation(e, href)}
+              >
+                <span className="nav-link-icon"><Icon size={18} /></span>
+                {label}
+                <ArrowRight size={14} className="nav-link-arrow" />
+              </a>
+            ))}
+          </div>
+
+          {/* Social Footer */}
+          <div className="mobile-menu-footer">
+            <p className="mobile-menu-footer-label">Get in touch</p>
+            <div className="mobile-menu-socials">
+              <a
+                href="https://wa.me/917977473538"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mobile-social-btn mobile-social-wa"
+              >
+                <Phone size={16} /> WhatsApp
+              </a>
+              <a
+                href="https://instagram.com/Robomitra.tech"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mobile-social-btn mobile-social-ig"
+              >
+                <Instagram size={16} /> Instagram
+              </a>
+            </div>
+          </div>
         </nav>
 
         {/* Right Icons */}
