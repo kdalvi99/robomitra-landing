@@ -1,8 +1,9 @@
 import { Menu, ShoppingCart, User, X, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, onCartClick }) {
+function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, onCartClick, searchQuery = "", onSearchChange }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchExpanded, setSearchExpanded] = useState(false);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -83,11 +84,40 @@ function Header({ links, ariaLabel, onNavigate, isHome = false, cartCount = 0, o
         </nav>
 
         {/* Right Icons */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div className="navbar-icons">
-            <button className="navbar-icon-btn" aria-label="Search" type="button">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {searchExpanded ? (
+            <div className="nav-search-wrapper" style={{ display: "flex", alignItems: "center", background: "#f1f5f9", borderRadius: "20px", padding: "4px 12px", border: "1px solid #e2e8f0" }}>
+              <Search size={14} style={{ color: "#64748b", marginRight: "6px" }} />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => onSearchChange(e.target.value)}
+                style={{ border: "none", background: "transparent", outline: "none", fontSize: "0.85rem", width: "90px", color: "var(--text)" }}
+                autoFocus
+              />
+              <button
+                onClick={() => {
+                  setSearchExpanded(false);
+                  onSearchChange("");
+                }}
+                style={{ border: "none", background: "transparent", cursor: "pointer", display: "flex", alignItems: "center", color: "#64748b", padding: "2px" }}
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ) : (
+            <button
+              className="navbar-icon-btn"
+              aria-label="Search"
+              type="button"
+              onClick={() => setSearchExpanded(true)}
+            >
               <Search size={18} />
             </button>
+          )}
+
+          <div className="navbar-icons">
             <button className="navbar-icon-btn" aria-label="Account" type="button">
               <User size={18} />
             </button>

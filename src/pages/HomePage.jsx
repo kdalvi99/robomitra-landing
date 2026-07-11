@@ -100,17 +100,17 @@ const shopProducts = [
   {
     id: "keychain-white",
     name: "RoboMitra",
-    nameHighlight: "Keychain White",
-    tagline: "Pocket-Sized Companion Robot",
+    nameHighlight: "Alex",
+    tagline: "Pocket-Sized Companion Robot (White)",
     price: "₹999",
     image: keychainWhite,
-    whatsappMsg: "I want to buy RoboMitra Mini Companion White keychain",
+    whatsappMsg: "I want to buy RoboMitra Alex",
     tag: "New Launch",
-    description: "A pocket-sized white RoboMitra companion with glowing expressive eyes.",
+    description: "A pocket-sized white RoboMitra companion (Alex) with glowing expressive eyes.",
     longDescription:
-      "RoboMitra Mini Companion White brings the companion robot look into a pocket-sized collectible form. It is designed for bags, keys, desks, and gifting with a glossy white body, rechargeable design, and animated blue display.",
+      "RoboMitra Alex brings the companion robot look into a pocket-sized collectible form. It is designed for bags, keys, desks, and gifting with a glossy white body, rechargeable design, and animated blue display.",
     highlights: [
-      "Pocket-sized keychain design",
+      "Pocket-sized keychain design (Alex)",
       "Animated blue display",
       "Rechargeable build",
       "Premium white finish",
@@ -120,17 +120,17 @@ const shopProducts = [
   {
     id: "keychain-black",
     name: "RoboMitra",
-    nameHighlight: "Keychain Black",
-    tagline: "Pocket-Sized Companion Robot",
+    nameHighlight: "Andy",
+    tagline: "Pocket-Sized Companion Robot (Black)",
     price: "₹999",
     image: keychainBlack,
-    whatsappMsg: "I want to buy RoboMitra Bag Keychain Black",
+    whatsappMsg: "I want to buy RoboMitra Andy",
     tag: "New Variant",
-    description: "A stealth black RoboMitra bag keychain with a cyber-style animated screen.",
+    description: "A stealth black RoboMitra bag keychain (Andy) with a cyber-style animated screen.",
     longDescription:
-      "RoboMitra Bag Keychain Black is the darker pocket companion variant with a textured black body, bright blue animated screen, rechargeable power, and a compact keyring form that is easy to carry anywhere.",
+      "RoboMitra Andy is the darker pocket companion variant with a textured black body, bright blue animated screen, rechargeable power, and a compact keyring form that is easy to carry anywhere.",
     highlights: [
-      "Stealth black textured body",
+      "Stealth black textured body (Andy)",
       "Animated blue screen",
       "Portable keyring form",
       "Rechargeable everyday carry",
@@ -169,9 +169,19 @@ const trustStrip = [
   { icon: Zap, title: "Innovative", desc: "& Fun" },
 ];
 
-function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick }) {
+function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery = "", onSearchChange }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [is3dOpen, setIs3dOpen] = useState(false);
+
+  const filteredProducts = shopProducts.filter((product) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      product.name.toLowerCase().includes(query) ||
+      product.nameHighlight.toLowerCase().includes(query) ||
+      product.tagline.toLowerCase().includes(query) ||
+      product.description.toLowerCase().includes(query)
+    );
+  });
 
   return (
     <div className="page-shell">
@@ -200,6 +210,8 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick }) {
         links={[]}
         cartCount={cartCount}
         onCartClick={onCartClick}
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
       />
 
       <main>
@@ -271,36 +283,45 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick }) {
             <div className="rm-explore-layout">
               {/* Product Cards */}
               <div className="rm-products-row">
-                {shopProducts.map((product, i) => (
-                  <FadeIn
-                    as="article"
-                    className="rm-product-card"
-                    delay={0.08 * (i + 1)}
-                    key={product.nameHighlight}
-                    onClick={() => setSelectedProduct(product)}
-                  >
-                    <div className="rm-product-img-wrap">
-                      <img src={product.image} alt={`${product.name} ${product.nameHighlight}`} />
-                    </div>
-                    <div className="rm-product-info">
-                      <p className="rm-product-name">
-                        {product.name} <span>{product.nameHighlight}</span>
-                      </p>
-                      <p className="rm-product-tagline">{product.tagline}</p>
-                      <p className="rm-product-price">{product.price}</p>
-                      <button
-                        className="rm-product-buy-btn"
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onAddToCart(product);
-                        }}
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </FadeIn>
-                ))}
+                {filteredProducts.length === 0 ? (
+                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px 24px', color: 'var(--text-secondary)' }}>
+                    <p style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>No robots found matching "{searchQuery}"</p>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '8px', marginBottom: 0 }}>
+                      Try searching for "Alex" (white) or "Andy" (black)!
+                    </p>
+                  </div>
+                ) : (
+                  filteredProducts.map((product, i) => (
+                    <FadeIn
+                      as="article"
+                      className="rm-product-card"
+                      delay={0.08 * (i + 1)}
+                      key={product.nameHighlight}
+                      onClick={() => setSelectedProduct(product)}
+                    >
+                      <div className="rm-product-img-wrap">
+                        <img src={product.image} alt={`${product.name} ${product.nameHighlight}`} />
+                      </div>
+                      <div className="rm-product-info">
+                        <p className="rm-product-name">
+                          {product.name} <span>{product.nameHighlight}</span>
+                        </p>
+                        <p className="rm-product-tagline">{product.tagline}</p>
+                        <p className="rm-product-price">{product.price}</p>
+                        <button
+                          className="rm-product-buy-btn"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onAddToCart(product);
+                          }}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    </FadeIn>
+                  ))
+                )}
               </div>
 
               {/* Trust Badges Column */}

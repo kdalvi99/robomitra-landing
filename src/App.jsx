@@ -19,6 +19,7 @@ function App() {
   });
   
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
   useEffect(() => {
@@ -104,6 +105,8 @@ function App() {
         onNavigate={navigateTo}
         cartCount={totalCartCount}
         onCartClick={() => setIsCartOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
     );
   } else if (pathname === "/about" || pathname === "/aboutus") {
@@ -112,6 +115,8 @@ function App() {
         onNavigate={navigateTo}
         cartCount={totalCartCount}
         onCartClick={() => setIsCartOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
     );
   } else {
@@ -121,6 +126,8 @@ function App() {
         cartCount={totalCartCount}
         onCartClick={() => setIsCartOpen(true)}
         onAddToCart={addToCart}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
     );
   }
