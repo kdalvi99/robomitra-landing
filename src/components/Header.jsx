@@ -18,6 +18,7 @@ function Header({
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchExpanded, setSearchExpanded] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const searchRef = useRef(null);
 
   useEffect(() => {
@@ -28,6 +29,13 @@ function Header({
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
+
+  // Scroll-aware header
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -49,21 +57,19 @@ function Header({
   const homeHref = isHome ? "#home" : "/";
 
   const navLinks = [
-    { href: "#home", label: "Home" },
+    { href: "#home",     label: "Home" },
     { href: "#features", label: "Features" },
     { href: "#products", label: "Shop" },
-    { href: "/about", label: "About Us" },
-    { href: "/support", label: "Support" },
-    { href: "#products", label: "Contact" },
+    { href: "/about",    label: "About Us" },
+    { href: "/support",  label: "Support" },
   ];
 
   const navLinksWithIcons = [
-    { href: "#home",     label: "Home",     Icon: Home },
-    { href: "#features", label: "Features",  Icon: Zap },
-    { href: "#products", label: "Shop",      Icon: ShoppingBag },
-    { href: "/about",    label: "About Us",  Icon: Info },
-    { href: "/support",  label: "Support",   Icon: Headphones },
-    { href: "#products", label: "Contact",   Icon: Phone },
+    { href: "#home", label: "Home", Icon: Home },
+    { href: "#features", label: "Features", Icon: Zap },
+    { href: "#products", label: "Shop", Icon: ShoppingBag },
+    { href: "/about", label: "About Us", Icon: Info },
+    { href: "/support", label: "Support", Icon: Headphones },
   ];
   const { exact, fuzzy, didYouMean } = fuzzySearch(products, searchQuery);
   const dropdownResults = [...exact, ...fuzzy].slice(0, 5);
@@ -83,13 +89,28 @@ function Header({
     onSearchChange(word);
   }
 
+  // Announcement marquee items
+  const announcements = [
+    { emoji: "🚀", text: "Proudly Made in India" },
+    { emoji: "⚡", text: "Smart Robots for a Smarter Tomorrow" },
+    { emoji: "🤖", text: "RoboMitra R1 — Starting at ₹1,599" },
+    { emoji: "🎮", text: "Play Mini Games on Your Robot's Screen" },
+    { emoji: "🔋", text: "2-4 Hours Battery with Type-C Charging" },
+    { emoji: "📦", text: "Fast Delivery Across India" },
+  ];
+
   return (
-    <header className="topbar">
-      {/* Announcement Bar */}
-      <div className="announcement-bar">
-        <span>🚀 Proudly Made in India</span>
-        <span className="dot-sep" />
-        <span>Smart Robots for a Smarter Tomorrow</span>
+    <header className={`topbar${scrolled ? " scrolled" : ""}`}>
+      {/* Animated Announcement Bar */}
+      <div className="announcement-bar" role="marquee" aria-label="Announcements">
+        <div className="announcement-track">
+          {[...announcements, ...announcements].map((item, i) => (
+            <span className="announcement-segment" key={i}>
+              <span className="announcement-pill">{item.emoji} {item.text}</span>
+              <span className="dot-sep" />
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Navbar */}
@@ -106,17 +127,27 @@ function Header({
           </span>
         </a>
 
-        {/* Nav Links – mobile full-screen menu */}
+        {/* Desktop nav links */}
+        <nav className="desktop-nav-links" aria-label="Desktop navigation">
+          {navLinks.map(({ href, label }) => (
+            <a
+              key={`desktop-${href}-${label}`}
+              className="nav-link"
+              href={href}
+              onClick={(e) => handleInternalNavigation(e, href)}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Mobile full-screen menu */}
         <nav
           id="primary-navigation"
           className={`nav-links ${menuOpen ? "nav-links-open" : ""}`}
           aria-label={ariaLabel}
         >
-          {/* Menu Header: Brand + Close */}
           <div className="mobile-menu-header">
-            <span className="brand-text-logo" style={{ fontSize: "1.3rem" }}>
-              Robo<span>Mitra</span>
-            </span>
             <button
               type="button"
               className="mobile-menu-close-btn"
@@ -168,7 +199,7 @@ function Header({
         </nav>
 
         {/* Right Icons */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           {/* Search with Dropdown */}
           <div ref={searchRef} className="nav-search-root">
             {searchExpanded ? (

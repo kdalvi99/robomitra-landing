@@ -1,14 +1,16 @@
 import { motion } from "framer-motion";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 36 },
+  hidden: { opacity: 0, y: 28, scale: 0.98, filter: "blur(10px)" },
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
+    scale: 1,
+    filter: "blur(0px)",
     transition: {
-      duration: 0.7,
+      duration: 0.85,
       delay,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.16, 1, 0.3, 1],
     },
   }),
 };

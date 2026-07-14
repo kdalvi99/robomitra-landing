@@ -21,6 +21,7 @@ import Header from "../components/Header";
 import ModelViewerModal from "../components/ModelViewerModal";
 import ProductDetailsModal from "../components/ProductDetailsModal";
 import img1599 from "../assets/1599rs.jpeg";
+import helloProductImg from "../assets/hello.jpeg";
 import keychainWhite from "../assets/robomitra-keychain-white.jpeg";
 import keychainBlack from "../assets/robomitra-keychain-black.jpeg";
 import dualRobotsImg from "../assets/dual-robots.jpg";
@@ -77,6 +78,26 @@ const bannerBullets = [
 ];
 
 const shopProducts = [
+  {
+    id: "hello-1699",
+    name: "RoboMitra",
+    nameHighlight: "Hello",
+    tagline: "New Interactive Robot",
+    price: "₹1,699",
+    image: helloProductImg,
+    whatsappMsg: "I want to buy RoboMitra Hello",
+    tag: "New Product",
+    description: "A fresh RoboMitra variant with a premium look and playful robot personality.",
+    longDescription:
+      "RoboMitra Hello is a new companion robot variant with a clean premium look, expressive screen, and a fun personality built for gifting and everyday desk use.",
+    highlights: [
+      "Premium new design",
+      "Expressive animated screen",
+      "Pocket-friendly form",
+      "Great for gifting",
+    ],
+    specs: ["Interactive", "Animated Eyes", "Compact", "Premium Finish"],
+  },
   {
     id: "r1",
     name: "RoboMitra",
@@ -169,6 +190,8 @@ const trustStrip = [
   { icon: Zap, title: "Innovative", desc: "& Fun" },
 ];
 
+
+
 function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery = "", onSearchChange, user, onLoginClick }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [is3dOpen, setIs3dOpen] = useState(false);
@@ -221,12 +244,14 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
         {/* ── HERO ── */}
         <section className="rm-hero" id="home" style={{ padding: 0, background: '#fff', width: '100%' }}>
           <FadeIn delay={0.05}>
-            <a href={whatsappUrl} target="_blank" rel="noreferrer" style={{ display: 'block', width: '100%' }}>
-              <img
-                src={heroImg}
-                alt="Meet RoboMitra R1 - Smart. Cute. Interactive."
-                style={{ width: "100%", height: "auto", display: "block" }}
-              />
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="rm-hero-image-link">
+              <div className="rm-hero-image-anim-wrap">
+                <img
+                  className="rm-hero-animated-img"
+                  src={heroImg}
+                  alt="Meet RoboMitra R1 - Smart. Cute. Interactive."
+                />
+              </div>
             </a>
           </FadeIn>
         </section>
