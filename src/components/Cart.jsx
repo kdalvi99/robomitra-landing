@@ -18,6 +18,8 @@ export default function Cart({
     0
   );
 
+  const deliveryCharges = 150;
+
   const formatCurrency = (val) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
@@ -28,6 +30,8 @@ export default function Cart({
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
+    const total = subtotal + deliveryCharges;
+
     // Build product list
     const productLines = cartItems
       .map((item) => `  • ${item.quantity}x ${item.name} ${item.nameHighlight || ""} — ${item.price} each`)
@@ -36,7 +40,9 @@ export default function Cart({
     let message = `Hello RoboMitra! 👋 I would like to place an order.\n\n`;
 
     message += `🛒 *Order Details:*\n${productLines}\n\n`;
-    message += `💰 *Total Amount:* ${formatCurrency(subtotal)}\n`;
+    message += `💵 *Subtotal:* ${formatCurrency(subtotal)}\n`;
+    message += `🚚 *Delivery Charges:* ${formatCurrency(deliveryCharges)}\n`;
+    message += `💰 *Total Amount:* ${formatCurrency(total)}\n`;
 
     if (user) {
       const fullName = user.name || `${user.firstName || ""} ${user.lastName || ""}`.trim();
@@ -168,12 +174,20 @@ export default function Cart({
                   </div>
                 )}
 
-                <div className="cart-summary-row">
+                <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
                   <span>Subtotal</span>
-                  <span className="cart-subtotal-price">{formatCurrency(subtotal)}</span>
+                  <span>{formatCurrency(subtotal)}</span>
+                </div>
+                <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
+                  <span>Delivery Charges</span>
+                  <span>{formatCurrency(deliveryCharges)}</span>
+                </div>
+                <div className="cart-summary-row" style={{ marginTop: "4px", paddingTop: "12px", borderTop: "1px dashed var(--border)" }}>
+                  <span>Total</span>
+                  <span className="cart-subtotal-price">{formatCurrency(subtotal + deliveryCharges)}</span>
                 </div>
                 <p className="cart-shipping-notice">
-                  Shipping calculated at checkout. Orders processed via WhatsApp.
+                  Orders are processed via WhatsApp. A flat delivery charge of ₹150 applies.
                 </p>
 
                 <button className="cart-checkout-btn" onClick={handleCheckout}>
