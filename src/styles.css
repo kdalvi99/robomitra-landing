@@ -3072,10 +3072,17 @@ button {
   }
 
   .navbar-icons {
-    display: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
-  .rm-products-row {
+  .navbar-icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .rm-products-row,
     grid-template-columns: 1fr;
   }
 
