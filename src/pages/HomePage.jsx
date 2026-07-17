@@ -15,11 +15,13 @@ import {
   Volume2,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FadeIn from "../components/FadeIn";
 import Header from "../components/Header";
 import ModelViewerModal from "../components/ModelViewerModal";
 import ProductDetailsModal from "../components/ProductDetailsModal";
+import AddReviewForm from "../components/AddReviewForm";
+import { createReview, fetchReviews } from "../lib/firebase";
 import img1599 from "../assets/1599rs.jpeg";
 import helloProductImg from "../assets/hello.jpeg";
 import keychainWhite from "../assets/robomitra-keychain-white.jpeg";
@@ -29,6 +31,8 @@ import heroImg from "../assets/heroma1in.jpeg";
 import mainsecondImg from "../assets/mainsecond.jpeg";
 
 const whatsappUrl = "https://wa.me/917977473538";
+
+const initialReviews = [];
 
 const heroFeatures = [
   { icon: Hand, label: "Touch\nControl" },
@@ -190,11 +194,55 @@ const trustStrip = [
   { icon: Zap, title: "Innovative", desc: "& Fun" },
 ];
 
-
+function formatReviewDate(createdAt) {
+  if (createdAt?.toDate) return createdAt.toDate().toLocaleDateString();
+  if (typeof createdAt === "number") return new Date(createdAt).toLocaleDateString();
+  if (typeof createdAt === "string") {
+    const parsed = new Date(createdAt);
+    if (!Number.isNaN(parsed.getTime())) return parsed.toLocaleDateString();
+  }
+  return "New";
+}
 
 function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery = "", onSearchChange, user, onLoginClick }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [is3dOpen, setIs3dOpen] = useState(false);
+  const [reviews, setReviews] = useState(initialReviews);
+  const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadReviews() {
+      setReviewsLoading(true);
+      try {
+        const remoteReviews = await fetchReviews();
+        if (!cancelled && remoteReviews.length > 0) {
+          setReviews(
+            remoteReviews.map((review) => ({
+              id: review.id,
+              name: review.name || "Anonymous",
+              rating: Number(review.rating) || 5,
+              comment: review.comment || "",
+              date: formatReviewDate(review.createdAt),
+              avatar:
+                review.avatar ||
+                `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(review.name || "Anonymous")}`,
+            }))
+          );
+        }
+      } catch {
+      } finally {
+        if (!cancelled) setReviewsLoading(false);
+      }
+    }
+
+    loadReviews();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filteredProducts = shopProducts.filter((product) => {
     const query = searchQuery.toLowerCase();
@@ -367,6 +415,87 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
                 ))}
               </FadeIn>
             </div>
+          </div>
+        </section>
+
+        {/* ── REVIEWS ── */}
+        <section className="rm-reviews-section" id="reviews">
+          <div className="rm-reviews-inner">
+            <FadeIn delay={0.05}>
+              <p className="rm-section-label">Reviews</p>
+              <h2 className="rm-section-heading">What Customers Are Saying</h2>
+              <div className="rm-section-divider" />
+            </FadeIn>
+
+            {reviews.length > 0 ? (
+              <div className="rm-reviews-grid">
+                {reviews.map((review, index) => (
+                  <FadeIn as="article" className="rm-review-card" delay={0.06 * (index + 1)} key={review.id}>
+                    <div className="rm-review-head">
+                      <img className="rm-review-avatar" src={review.avatar} alt={review.name} />
+                      <div>
+                        <h3>{review.name}</h3>
+                        <div className="rm-review-stars" aria-label={`${review.rating} out of 5 stars`}>
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <span key={i}>{i < review.rating ? "★" : "☆"}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <span className="rm-review-date">{review.date}</span>
+                    </div>
+                    <p className="rm-review-comment">{review.comment}</p>
+                  </FadeIn>
+                ))}
+              </div>
+            ) : (
+              <FadeIn className="rm-review-empty" delay={0.08}>
+                <div className="rm-review-empty-icon">★</div>
+                <h3>No reviews yet</h3>
+                <p>Be the first to share your RoboMitra experience.</p>
+              </FadeIn>
+            )}
+
+            <FadeIn className="rm-review-cta" delay={0.2}>
+              <p>Share your experience and help other buyers learn more about RoboMitra.</p>
+              <button className="rm-btn-primary" type="button" onClick={() => setIsReviewFormOpen(true)}>
+                Write a Review
+              </button>
+            </FadeIn>
+
+            {reviewsLoading && <p className="rm-reviews-status">Loading reviews...</p>}
+
+            {isReviewFormOpen && (
+              <div className="rm-review-form-overlay" role="dialog" aria-modal="true">
+                <div className="rm-review-form-shell">
+                  <AddReviewForm
+                    onClose={() => setIsReviewFormOpen(false)}
+                    onReviewAdded={async (newReview) => {
+                      const reviewPayload = {
+                        name: newReview.name,
+                        rating: Number(newReview.rating),
+                        comment: newReview.comment,
+                        avatar: newReview.avatar,
+                      };
+
+                      await createReview(reviewPayload);
+                      const refreshed = await fetchReviews();
+                      setReviews(
+                        refreshed.map((review) => ({
+                          id: review.id,
+                          name: review.name || "Anonymous",
+                          rating: Number(review.rating) || 5,
+                          comment: review.comment || "",
+                          date: formatReviewDate(review.createdAt),
+                          avatar:
+                            review.avatar ||
+                            `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(review.name || "Anonymous")}`,
+                        }))
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </section>
 

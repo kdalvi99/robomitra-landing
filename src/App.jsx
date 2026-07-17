@@ -4,8 +4,9 @@ import HomePage from "./pages/HomePage";
 import SupportPage from "./pages/SupportPage";
 import AIAssistant from "./components/AIAssistant";
 import Cart from "./components/Cart";
-import CustomerDetailsModal from "./components/CustomerDetailsModal";
+import LoginModal from "./components/LoginModal";
 import ContactFloat from "./components/ContactFloat";
+import { firebaseReady, fetchUserProfile, subscribeToAuth } from "./lib/firebase";
 
 function App() {
   const [pathname, setPathname] = useState(window.location.pathname);
@@ -20,15 +21,7 @@ function App() {
     }
   });
 
-  // Customer details persisted in localStorage
-  const [user, setUser] = useState(() => {
-    try {
-      const saved = localStorage.getItem("robomitra_customer");
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState(null);
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -39,12 +32,50 @@ function App() {
     localStorage.setItem("robomitra_cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Sync customer with localStorage
   useEffect(() => {
-    if (user) {
-      localStorage.setItem("robomitra_customer", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("robomitra_customer");
+    if (firebaseReady) {
+      const unsubscribe = subscribeToAuth(async (authUser) => {
+        if (!authUser) {
+          setUser(null);
+          return;
+        }
+
+        try {
+          const profile = await fetchUserProfile(authUser.uid);
+          setUser({
+            uid: authUser.uid,
+            name: profile?.name || authUser.displayName || "",
+            email: profile?.email || authUser.email || "",
+            address: profile?.address || "",
+          });
+        } catch {
+          setUser({
+            uid: authUser.uid,
+            name: authUser.displayName || "",
+            email: authUser.email || "",
+            address: "",
+          });
+        }
+      });
+
+      return () => unsubscribe();
+    }
+
+    try {
+      const saved = localStorage.getItem("robomitra_customer");
+      setUser(saved ? JSON.parse(saved) : null);
+    } catch {
+      setUser(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!firebaseReady) {
+      if (user) {
+        localStorage.setItem("robomitra_customer", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("robomitra_customer");
+      }
     }
   }, [user]);
 
@@ -144,7 +175,7 @@ function App() {
       {pageContent}
       <AIAssistant />
       <ContactFloat />
-      <CustomerDetailsModal
+      <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
         user={user}

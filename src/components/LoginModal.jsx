@@ -1,134 +1,214 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, User, Mail, MapPin, LogOut, Eye, EyeOff, Lock, UserPlus, LogIn, CheckCircle, Edit3 } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  X,
+  User,
+  Mail,
+  MapPin,
+  LogOut,
+  Eye,
+  EyeOff,
+  Lock,
+  UserPlus,
+  LogIn,
+  CheckCircle,
+  Edit3,
+  Chrome,
+} from "lucide-react";
+import {
+  auth,
+  fetchUserProfile,
+  loginWithEmail,
+  logoutUser,
+  registerWithEmail,
+  saveUserProfile,
+  signInWithGoogle,
+} from "../lib/firebase";
 
-// Helpers – store all registered accounts in localStorage under "robomitra_accounts"
-const getAccounts = () => {
-  try {
-    return JSON.parse(localStorage.getItem("robomitra_accounts") || "[]");
-  } catch {
-    return [];
-  }
-};
-const saveAccounts = (accounts) => {
-  localStorage.setItem("robomitra_accounts", JSON.stringify(accounts));
-};
-
-// Tiny validation helpers
-const emailValid = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const emptySignup = { name: "", email: "", password: "", address: "" };
+const emptyLogin = { email: "", password: "" };
 
 export default function LoginModal({ isOpen, onClose, user, onSaveUser }) {
-  // "signup" | "login" | "profile" | "edit"
   const [view, setView] = useState(user ? "profile" : "login");
-
-  // signup form
-  const [signupData, setSignupData] = useState({ name: "", email: "", password: "", address: "" });
-  const [signupErrors, setSignupErrors] = useState({});
-
-  // login form
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
-  const [loginError, setLoginError] = useState("");
-
-  // edit form
-  const [editData, setEditData] = useState({ name: "", email: "", address: "" });
-
-  // misc
+  const [signupData, setSignupData] = useState(emptySignup);
+  const [loginData, setLoginData] = useState(emptyLogin);
+  const [editData, setEditData] = useState({ name: "", address: "" });
   const [showPass, setShowPass] = useState(false);
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [banner, setBanner] = useState("");
 
-  // sync view when modal opens / user changes
+  const displayName = useMemo(() => {
+    if (!user) return "";
+    return user.name || auth?.currentUser?.displayName || "";
+  }, [user]);
+
   useEffect(() => {
-    if (isOpen) {
-      setView(user ? "profile" : "login");
-      setSignupErrors({});
-      setLoginError("");
-      setSuccess("");
+    if (!isOpen) return;
+    setErrors({});
+    setBanner("");
+    setShowPass(false);
+    setLoginData(emptyLogin);
+    setSignupData(emptySignup);
+    if (user) {
+      setView("profile");
+      setEditData({
+        name: user.name || "",
+        address: user.address || "",
+      });
+    } else {
+      setView("login");
     }
   }, [isOpen, user]);
 
-  // ── SIGN UP ──────────────────────────────────────────────────────────────
-  const validateSignup = () => {
-    const errs = {};
-    if (!signupData.name.trim()) errs.name = "Full name is required";
-    if (!emailValid(signupData.email)) errs.email = "Valid email is required";
-    if (signupData.password.length < 6) errs.password = "Password must be at least 6 characters";
-    if (!signupData.address.trim()) errs.address = "Shipping address is required";
-    return errs;
+  useEffect(() => {
+    if (user) {
+      setEditData({ name: user.name || "", address: user.address || "" });
+    }
+  }, [user]);
+
+  const closeAndSync = (nextUser) => {
+    onSaveUser?.(nextUser);
+    if (nextUser) setView("profile");
   };
 
-  const handleSignup = (e) => {
-    e.preventDefault();
-    const errs = validateSignup();
-    if (Object.keys(errs).length) { setSignupErrors(errs); return; }
+  const normalizeProfile = (authUser, profile) => ({
+    uid: authUser.uid,
+    name: profile?.name || authUser.displayName || "",
+    email: profile?.email || authUser.email || "",
+    address: profile?.address || "",
+  });
 
-    const accounts = getAccounts();
-    if (accounts.find((a) => a.email.toLowerCase() === signupData.email.toLowerCase())) {
-      setSignupErrors({ email: "An account with this email already exists" });
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    const nextErrors = {};
+    if (!signupData.name.trim()) nextErrors.name = "Full name is required";
+    if (!signupData.email.trim()) nextErrors.email = "Email is required";
+    if (signupData.password.length < 6) nextErrors.password = "Password must be at least 6 characters";
+    if (!signupData.address.trim()) nextErrors.address = "Shipping address is required";
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
       return;
     }
 
-    const newAccount = {
-      name: signupData.name.trim(),
-      email: signupData.email.trim().toLowerCase(),
-      password: signupData.password,   // plaintext – fine for a demo/offline app
-      address: signupData.address.trim(),
-    };
-    saveAccounts([...accounts, newAccount]);
-    onSaveUser({ name: newAccount.name, email: newAccount.email, address: newAccount.address });
-    setSuccess("Account created! Welcome to RoboMitra 🎉");
-    setView("profile");
+    setLoading(true);
+    setErrors({});
+    try {
+      const authUser = await registerWithEmail(
+        signupData.email.trim(),
+        signupData.password,
+        signupData.name.trim(),
+        signupData.address.trim()
+      );
+      const profile = await fetchUserProfile(authUser.uid);
+      const nextUser = normalizeProfile(authUser, profile || signupData);
+      closeAndSync(nextUser);
+      setBanner("Account created successfully");
+      setView("profile");
+    } catch {
+      setErrors({ form: "Could not create your account right now." });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ── LOG IN ───────────────────────────────────────────────────────────────
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setLoginError("");
-    const accounts = getAccounts();
-    const found = accounts.find(
-      (a) =>
-        a.email.toLowerCase() === loginData.email.trim().toLowerCase() &&
-        a.password === loginData.password
-    );
-    if (!found) { setLoginError("Incorrect email or password. Please try again."); return; }
-    onSaveUser({ name: found.name, email: found.email, address: found.address });
-    setSuccess(`Welcome back, ${found.name}! 👋`);
-    setView("profile");
+    const nextErrors = {};
+    if (!loginData.email.trim()) nextErrors.email = "Email is required";
+    if (!loginData.password) nextErrors.password = "Password is required";
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
+
+    setLoading(true);
+    setErrors({});
+    try {
+      const authUser = await loginWithEmail(loginData.email.trim(), loginData.password);
+      const profile = await fetchUserProfile(authUser.uid);
+      const nextUser = normalizeProfile(authUser, profile);
+      closeAndSync(nextUser);
+      setBanner(`Welcome back${nextUser.name ? `, ${nextUser.name}` : ""}!`);
+      setView("profile");
+    } catch {
+      setErrors({ form: "Could not log you in right now." });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ── EDIT PROFILE ─────────────────────────────────────────────────────────
-  const openEdit = () => {
-    setEditData({ name: user.name, email: user.email, address: user.address });
-    setView("edit");
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setErrors({});
+    try {
+      const result = await signInWithGoogle();
+      if (!result?.user) {
+        setBanner("Redirecting to Google sign-in...");
+        return;
+      }
+
+      const authUser = result.user;
+      const profile = await fetchUserProfile(authUser.uid);
+      const nextUser = normalizeProfile(authUser, profile);
+      closeAndSync(nextUser);
+      setBanner("Signed in with Google successfully");
+      setView("profile");
+    } catch (error) {
+      setErrors({ form: error?.message || "Could not sign you in with Google right now." });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEdit = (e) => {
+  const handleEdit = async (e) => {
     e.preventDefault();
-    if (!editData.name.trim() || !editData.address.trim()) return;
+    if (!user) return;
+    const nextErrors = {};
+    if (!editData.name.trim()) nextErrors.name = "Name is required";
+    if (!editData.address.trim()) nextErrors.address = "Shipping address is required";
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
 
-    // update the master accounts store too
-    const accounts = getAccounts().map((a) =>
-      a.email.toLowerCase() === user.email.toLowerCase()
-        ? { ...a, name: editData.name.trim(), address: editData.address.trim() }
-        : a
-    );
-    saveAccounts(accounts);
-    onSaveUser({ ...user, name: editData.name.trim(), address: editData.address.trim() });
-    setView("profile");
+    setLoading(true);
+    setErrors({});
+    try {
+      await saveUserProfile(user.uid, {
+        name: editData.name.trim(),
+        email: user.email,
+        address: editData.address.trim(),
+      });
+      const nextUser = { ...user, name: editData.name.trim(), address: editData.address.trim() };
+      closeAndSync(nextUser);
+      setBanner("Details saved successfully");
+      setView("profile");
+    } catch {
+      setErrors({ form: "Could not save your details right now." });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ── LOG OUT ───────────────────────────────────────────────────────────────
-  const handleLogout = () => {
-    onSaveUser(null);
-    setLoginData({ email: "", password: "" });
-    setView("login");
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      await logoutUser();
+      onSaveUser?.(null);
+      setView("login");
+      setBanner("Logged out successfully");
+      setLoginData(emptyLogin);
+      setSignupData(emptySignup);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // ── RENDER ────────────────────────────────────────────────────────────────
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="login-modal-backdrop">
-          {/* Overlay */}
           <motion.div
             className="login-modal-overlay"
             initial={{ opacity: 0 }}
@@ -137,9 +217,8 @@ export default function LoginModal({ isOpen, onClose, user, onSaveUser }) {
             onClick={onClose}
           />
 
-          {/* Modal */}
           <motion.div
-            className="login-modal-container"
+            className="login-modal-container auth-modal-container"
             key={view}
             initial={{ scale: 0.93, opacity: 0, y: 16 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -150,7 +229,14 @@ export default function LoginModal({ isOpen, onClose, user, onSaveUser }) {
               <X size={18} />
             </button>
 
-            {/* ── SIGN UP ── */}
+
+
+            {banner && (
+              <div className="login-success-banner" style={{ margin: "16px 32px 0" }}>
+                <CheckCircle size={15} /> {banner}
+              </div>
+            )}
+
             {view === "signup" && (
               <form onSubmit={handleSignup} className="login-form" noValidate>
                 <div className="login-form-header">
@@ -158,74 +244,92 @@ export default function LoginModal({ isOpen, onClose, user, onSaveUser }) {
                     <UserPlus size={20} />
                   </div>
                   <h3>Create Account</h3>
-                  <p>Join RoboMitra — save your address for faster checkout.</p>
+                  <p>Sign up once and log in from any device.</p>
+                </div>
+
+                <div className="login-social-wrap">
+                  <button type="button" className="login-google-btn" onClick={handleGoogleLogin} disabled={loading}>
+                    <Chrome size={16} /> Continue with Google
+                  </button>
+                  <div className="login-or-divider">
+                    <span>or</span>
+                  </div>
                 </div>
 
                 <div className="login-form-body">
-                  {/* Name */}
                   <div className="login-input-group">
                     <label htmlFor="su-name"><User size={13} /> Full Name</label>
                     <input
-                      id="su-name" type="text" placeholder="e.g. Rohan Sharma" value={signupData.name}
+                      id="su-name"
+                      type="text"
+                      placeholder="e.g. Rohan Sharma"
+                      value={signupData.name}
                       onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
+                      autoComplete="name"
                     />
-                    {signupErrors.name && <span className="login-field-error">{signupErrors.name}</span>}
+                    {errors.name && <span className="login-field-error">{errors.name}</span>}
                   </div>
 
-                  {/* Email */}
                   <div className="login-input-group">
                     <label htmlFor="su-email"><Mail size={13} /> Email Address</label>
                     <input
-                      id="su-email" type="email" placeholder="you@example.com" value={signupData.email}
+                      id="su-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={signupData.email}
                       onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+                      autoComplete="email"
                     />
-                    {signupErrors.email && <span className="login-field-error">{signupErrors.email}</span>}
+                    {errors.email && <span className="login-field-error">{errors.email}</span>}
                   </div>
 
-                  {/* Password */}
                   <div className="login-input-group">
                     <label htmlFor="su-pass"><Lock size={13} /> Password</label>
                     <div className="login-pass-wrap">
                       <input
-                        id="su-pass" type={showPass ? "text" : "password"} placeholder="Min. 6 characters"
+                        id="su-pass"
+                        type={showPass ? "text" : "password"}
+                        placeholder="Min. 6 characters"
                         value={signupData.password}
                         onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+                        autoComplete="new-password"
                       />
                       <button type="button" className="login-eye-btn" onClick={() => setShowPass(!showPass)}>
                         {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                       </button>
                     </div>
-                    {signupErrors.password && <span className="login-field-error">{signupErrors.password}</span>}
+                    {errors.password && <span className="login-field-error">{errors.password}</span>}
                   </div>
 
-                  {/* Address */}
                   <div className="login-input-group">
                     <label htmlFor="su-addr"><MapPin size={13} /> Shipping Address</label>
                     <textarea
-                      id="su-addr" rows={3} placeholder="Flat, Street, City, State, Pincode"
+                      id="su-addr"
+                      rows={3}
+                      placeholder="Flat, Street, City, State, Pincode"
                       value={signupData.address}
                       onChange={(e) => setSignupData({ ...signupData, address: e.target.value })}
+                      autoComplete="street-address"
                     />
-                    {signupErrors.address && <span className="login-field-error">{signupErrors.address}</span>}
+                    {errors.address && <span className="login-field-error">{errors.address}</span>}
                   </div>
                 </div>
 
+                {errors.form && <div className="login-error-banner">{errors.form}</div>}
+
                 <div className="login-form-footer">
-                  <button type="submit" className="login-save-btn">
-                    <UserPlus size={15} /> Create Account
+                  <button type="submit" className="login-save-btn" disabled={loading}>
+                    {loading ? "Creating..." : (<><UserPlus size={15} /> Create Account</>)}
                   </button>
                 </div>
 
                 <p className="login-switch-text">
                   Already have an account?{" "}
-                  <button type="button" className="login-switch-btn" onClick={() => setView("login")}>
-                    Log In
-                  </button>
+                  <button type="button" className="login-switch-btn" onClick={() => setView("login")}>Log In</button>
                 </p>
               </form>
             )}
 
-            {/* ── LOG IN ── */}
             {view === "login" && (
               <form onSubmit={handleLogin} className="login-form" noValidate>
                 <div className="login-form-header">
@@ -233,67 +337,74 @@ export default function LoginModal({ isOpen, onClose, user, onSaveUser }) {
                     <LogIn size={20} />
                   </div>
                   <h3>Welcome Back</h3>
-                  <p>Log in to access your saved address at checkout.</p>
+                  <p>Log in to restore your account on this or any other device.</p>
+                </div>
+
+                <div className="login-social-wrap">
+                  <button type="button" className="login-google-btn" onClick={handleGoogleLogin} disabled={loading}>
+                    <Chrome size={16} /> Continue with Google
+                  </button>
+                  <div className="login-or-divider">
+                    <span>or</span>
+                  </div>
                 </div>
 
                 <div className="login-form-body">
                   <div className="login-input-group">
                     <label htmlFor="li-email"><Mail size={13} /> Email Address</label>
                     <input
-                      id="li-email" type="email" placeholder="you@example.com" value={loginData.email}
+                      id="li-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={loginData.email}
                       onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      autoComplete="email"
                     />
+                    {errors.email && <span className="login-field-error">{errors.email}</span>}
                   </div>
 
                   <div className="login-input-group">
                     <label htmlFor="li-pass"><Lock size={13} /> Password</label>
                     <div className="login-pass-wrap">
                       <input
-                        id="li-pass" type={showPass ? "text" : "password"} placeholder="Your password"
+                        id="li-pass"
+                        type={showPass ? "text" : "password"}
+                        placeholder="Your password"
                         value={loginData.password}
                         onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                        autoComplete="current-password"
                       />
                       <button type="button" className="login-eye-btn" onClick={() => setShowPass(!showPass)}>
                         {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                       </button>
                     </div>
+                    {errors.password && <span className="login-field-error">{errors.password}</span>}
                   </div>
-
-                  {loginError && (
-                    <div className="login-error-banner">{loginError}</div>
-                  )}
                 </div>
 
+                {errors.form && <div className="login-error-banner">{errors.form}</div>}
+
                 <div className="login-form-footer">
-                  <button type="submit" className="login-save-btn">
-                    <LogIn size={15} /> Log In
+                  <button type="submit" className="login-save-btn" disabled={loading}>
+                    {loading ? "Logging in..." : (<><LogIn size={15} /> Log In</>)}
                   </button>
                 </div>
 
                 <p className="login-switch-text">
                   New here?{" "}
-                  <button type="button" className="login-switch-btn" onClick={() => setView("signup")}>
-                    Create Account
-                  </button>
+                  <button type="button" className="login-switch-btn" onClick={() => setView("signup")}>Create Account</button>
                 </p>
               </form>
             )}
 
-            {/* ── PROFILE ── */}
             {view === "profile" && user && (
-              <div className="login-profile-card">
-                {success && (
-                  <div className="login-success-banner">
-                    <CheckCircle size={15} /> {success}
-                  </div>
-                )}
-
+              <div className="login-profile-card auth-profile-card">
                 <div className="login-profile-header">
                   <div className="login-profile-avatar">
-                    {user.name.charAt(0).toUpperCase()}
+                    {displayName?.charAt(0)?.toUpperCase() || "?"}
                   </div>
-                  <h3>{user.name}</h3>
-                  <p className="login-profile-tag">RoboMitra Customer</p>
+                  <h3>{displayName || "Your Account"}</h3>
+                  <p className="login-profile-tag">Account</p>
                 </div>
 
                 <div className="login-profile-body">
@@ -305,52 +416,66 @@ export default function LoginModal({ isOpen, onClose, user, onSaveUser }) {
                     <span className="detail-label">Shipping Address</span>
                     <div className="detail-val address-box">
                       <MapPin size={14} className="address-pin-icon" />
-                      <p>{user.address}</p>
+                      <p>{user.address || "Add your shipping address"}</p>
                     </div>
                   </div>
                 </div>
 
+                {errors.form && <div className="login-error-banner">{errors.form}</div>}
+
                 <div className="login-profile-footer">
-                  <button type="button" className="login-edit-btn" onClick={openEdit}>
+                  <button type="button" className="login-edit-btn" onClick={() => setView("edit")}>
                     <Edit3 size={14} /> Edit Details
                   </button>
-                  <button type="button" className="login-logout-btn" onClick={handleLogout}>
+                  <button type="button" className="login-logout-btn" onClick={handleLogout} disabled={loading}>
                     <LogOut size={14} /> Log Out
                   </button>
                 </div>
               </div>
             )}
 
-            {/* ── EDIT ── */}
-            {view === "edit" && (
+            {view === "edit" && user && (
               <form onSubmit={handleEdit} className="login-form">
                 <div className="login-form-header">
                   <div className="login-header-icon">
                     <Edit3 size={20} />
                   </div>
                   <h3>Edit Details</h3>
-                  <p>Update your shipping address or display name.</p>
+                  <p>Update your name or shipping address.</p>
                 </div>
 
                 <div className="login-form-body">
                   <div className="login-input-group">
                     <label htmlFor="ed-name"><User size={13} /> Full Name</label>
                     <input
-                      id="ed-name" type="text" value={editData.name} required
+                      id="ed-name"
+                      type="text"
+                      value={editData.name}
+                      required
                       onChange={(e) => setEditData({ ...editData, name: e.target.value })}
                     />
+                    {errors.name && <span className="login-field-error">{errors.name}</span>}
                   </div>
+
                   <div className="login-input-group">
                     <label htmlFor="ed-addr"><MapPin size={13} /> Shipping Address</label>
                     <textarea
-                      id="ed-addr" rows={3} value={editData.address} required
+                      id="ed-addr"
+                      rows={3}
+                      value={editData.address}
+                      required
                       onChange={(e) => setEditData({ ...editData, address: e.target.value })}
                     />
+                    {errors.address && <span className="login-field-error">{errors.address}</span>}
                   </div>
                 </div>
 
+                {errors.form && <div className="login-error-banner">{errors.form}</div>}
+
                 <div className="login-form-footer">
-                  <button type="submit" className="login-save-btn">Save Changes</button>
+                  <button type="submit" className="login-save-btn" disabled={loading}>
+                    {loading ? "Saving..." : "Save Changes"}
+                  </button>
                   <button type="button" className="login-cancel-btn" onClick={() => setView("profile")}>Cancel</button>
                 </div>
               </form>

@@ -1,126 +1,257 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  CheckCircle2,
+  MessageSquareText,
+  SendHorizontal,
+  Sparkles,
+  Star,
+  User,
+  X,
+} from "lucide-react";
+
+const reviewMood = {
+  1: "Needs work",
+  2: "Could be better",
+  3: "Good",
+  4: "Great",
+  5: "Amazing",
+};
+
+const stars = [1, 2, 3, 4, 5];
 
 const AddReviewForm = ({ onReviewAdded, onClose }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    name: "",
     rating: 5,
-    comment: ''
+    comment: "",
   });
   const [hoveredRating, setHoveredRating] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const timerRef = useRef(null);
+  const activeRating = hoveredRating || formData.rating;
+  const commentLength = formData.comment.trim().length;
+  const nameLength = formData.name.trim().length;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Create the new review object
-    const newReview = {
-      id: Date.now(),
-      ...formData,
-      date: new Date().toLocaleDateString(),
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name}`
+  const ratingLabel = useMemo(() => reviewMood[activeRating] || "Amazing", [activeRating]);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
+  }, []);
 
-    // Pass the data back to the parent component
-    if (onReviewAdded) {
-      onReviewAdded(newReview);
+  const handleChange = (field) => (e) => {
+    const value = e.target.value;
+    setFormData((current) => ({ ...current, [field]: value }));
+  };
+
+  const setRating = (rating) => {
+    setFormData((current) => ({ ...current, rating }));
+    setHoveredRating(0);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitError("");
+
+    const trimmedName = formData.name.trim();
+    const trimmedComment = formData.comment.trim();
+
+    if (!trimmedName) {
+      setSubmitError("Please add your name.");
+      return;
     }
 
-    setSubmitted(true);
-    setFormData({ name: '', rating: 5, comment: '' });
-    
-    // Close after success
-    setTimeout(() => {
-      setSubmitted(false);
-      if (onClose) onClose();
-    }, 2000);
+    if (!trimmedComment) {
+      setSubmitError("Please write your review message.");
+      return;
+    }
+
+    if (!formData.rating || formData.rating < 1) {
+      setSubmitError("Please choose a rating.");
+      return;
+    }
+
+    const newReview = {
+      id: Date.now(),
+      name: trimmedName,
+      rating: Number(formData.rating),
+      comment: trimmedComment,
+      date: new Date().toLocaleDateString(),
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+        trimmedName || "Anonymous"
+      )}`,
+    };
+
+    try {
+      setIsSubmitting(true);
+      if (onReviewAdded) {
+        await onReviewAdded(newReview);
+      }
+
+      setSubmitted(true);
+      setFormData({ name: "", rating: 5, comment: "" });
+      setHoveredRating(0);
+
+      timerRef.current = window.setTimeout(() => {
+        setSubmitted(false);
+        setIsSubmitting(false);
+        if (onClose) onClose();
+      }, 1600);
+    } catch (error) {
+      setIsSubmitting(false);
+      setSubmitError(error?.message || "Could not save your review");
+    }
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 max-w-md w-full mx-auto my-8 relative"
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96, y: 18 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+      className="rm-review-form-card"
     >
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-800">Leave a Review</h3>
+      <div className="rm-review-form-topbar">
+        <div className="rm-review-form-badge">
+          <Sparkles size={14} />
+          Share your experience
+        </div>
         {onClose && (
-          <button 
+          <button
+            type="button"
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-full text-gray-400 transition-colors"
+            className="rm-review-form-close"
+            aria-label="Close review form"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X size={18} />
           </button>
         )}
       </div>
-      
+
       {submitted ? (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="bg-green-50 text-green-700 p-6 rounded-xl text-center font-medium border border-green-100"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="rm-review-success"
         >
-          <p className="text-lg">Thank you!</p>
-          <p className="text-sm opacity-80">Your review has been successfully added.</p>
+          <div className="rm-review-success-icon">
+            <CheckCircle2 size={26} />
+          </div>
+          <h3>Thanks for your review!</h3>
+          <p>Your feedback is now saved.</p>
         </motion.div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Your Name</label>
-            <input
-              required
-              type="text"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
-              placeholder="Enter your name"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Rating</label>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setFormData({...formData, rating: star})}
-                  onMouseEnter={() => setHoveredRating(star)}
-                  onMouseLeave={() => setHoveredRating(0)}
-                  className="focus:outline-none transition-transform hover:scale-110"
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className={`h-8 w-8 ${(hoveredRating || formData.rating) >= star ? 'text-yellow-400' : 'text-gray-200'}`}
-                    viewBox="0 0 20 20" 
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                </button>
-              ))}
+        <form onSubmit={handleSubmit} className="rm-review-form" noValidate>
+          <div className="rm-review-form-header">
+            <div className="rm-review-form-icon">
+              <MessageSquareText size={22} />
+            </div>
+            <div className="rm-review-form-heading-copy">
+              <p className="rm-review-form-kicker">Public review</p>
+              <h3>Write a helpful review</h3>
+              <p>
+                Tell others what stood out, what felt premium, and what could be improved.
+              </p>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Comment</label>
-            <textarea
-              required
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none min-h-[100px] transition-all resize-none"
-              value={formData.comment}
-              onChange={(e) => setFormData({...formData, comment: e.target.value})}
-              placeholder="Tell us what you think..."
-            />
+          <div className="rm-review-form-summary">
+            <div className="rm-review-summary-pill">
+              <Star size={14} />
+              {ratingLabel}
+            </div>
+            <div className="rm-review-summary-pill rm-review-summary-pill-soft">
+              <CheckCircle2 size={14} />
+              Saved securely
+            </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-lg active:scale-[0.98]"
-          >
-            Submit Review
-          </button>
+          {submitError && <div className="rm-review-error-banner">{submitError}</div>}
+
+          <div className="rm-review-rating-card">
+            <div className="rm-review-rating-copy">
+              <p className="rm-review-label">Your rating</p>
+              <h4>How was your RoboMitra experience?</h4>
+            </div>
+            <div className="rm-review-star-row" role="radiogroup" aria-label="Review rating">
+              {stars.map((rating) => {
+                const active = rating <= activeRating;
+                return (
+                  <button
+                    key={rating}
+                    type="button"
+                    className={`rm-review-star-btn ${active ? "is-active" : ""}`}
+                    onMouseEnter={() => setHoveredRating(rating)}
+                    onMouseLeave={() => setHoveredRating(0)}
+                    onFocus={() => setHoveredRating(rating)}
+                    onBlur={() => setHoveredRating(0)}
+                    onClick={() => setRating(rating)}
+                    aria-pressed={formData.rating === rating}
+                    aria-label={`${rating} star${rating > 1 ? "s" : ""}`}
+                  >
+                    <Star size={18} fill={active ? "currentColor" : "none"} />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="rm-review-input-grid">
+            <label className="rm-review-input-group">
+              <span>
+                <User size={14} />
+                Your name
+              </span>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={handleChange("name")}
+                placeholder="Enter your name"
+                maxLength={40}
+                autoComplete="name"
+                required
+              />
+              <small>{nameLength}/40 characters</small>
+            </label>
+
+            <label className="rm-review-input-group rm-review-input-group-wide">
+              <span>
+                <MessageSquareText size={14} />
+                Your review
+              </span>
+              <textarea
+                value={formData.comment}
+                onChange={handleChange("comment")}
+                placeholder="Tell people what you liked most about RoboMitra..."
+                rows={5}
+                maxLength={240}
+                required
+              />
+              <div className="rm-review-char-row">
+                <small>Keep it short, clear, and honest.</small>
+                <small>{commentLength}/240</small>
+              </div>
+            </label>
+          </div>
+
+          <div className="rm-review-form-footer">
+            <button type="button" onClick={onClose} className="rm-review-cancel-btn">
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="rm-review-submit-btn"
+              disabled={isSubmitting}
+            >
+              <SendHorizontal size={16} />
+              {isSubmitting ? "Saving..." : "Submit review"}
+            </button>
+          </div>
         </form>
       )}
     </motion.div>
