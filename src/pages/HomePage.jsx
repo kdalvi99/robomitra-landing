@@ -345,19 +345,19 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
             <div className="rm-offer-popup-products">
               <div className="rm-offer-popup-row">
                 <span>RoboMitra Hello</span>
-                <span><s className="rm-offer-orig">₹6,796</s> <strong className="rm-offer-new">₹3,398</strong></span>
+                <span><s className="rm-offer-orig">₹3,398</s> <strong className="rm-offer-new">₹1,699</strong></span>
               </div>
               <div className="rm-offer-popup-row">
                 <span>RoboMitra R1</span>
-                <span><s className="rm-offer-orig">₹6,396</s> <strong className="rm-offer-new">₹3,198</strong></span>
+                <span><s className="rm-offer-orig">₹3,198</s> <strong className="rm-offer-new">₹1,599</strong></span>
               </div>
               <div className="rm-offer-popup-row">
                 <span>RoboMitra Alex</span>
-                <span><s className="rm-offer-orig">₹3,996</s> <strong className="rm-offer-new">₹1,998</strong></span>
+                <span><s className="rm-offer-orig">₹1,998</s> <strong className="rm-offer-new">₹999</strong></span>
               </div>
               <div className="rm-offer-popup-row">
                 <span>RoboMitra Andy</span>
-                <span><s className="rm-offer-orig">₹3,996</s> <strong className="rm-offer-new">₹1,998</strong></span>
+                <span><s className="rm-offer-orig">₹1,998</s> <strong className="rm-offer-new">₹999</strong></span>
               </div>
             </div>
 
