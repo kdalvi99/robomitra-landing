@@ -25,6 +25,7 @@ function App() {
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
@@ -181,6 +182,46 @@ function App() {
         user={user}
         onSaveUser={handleSaveUser}
       />
+      {isOfferPopupOpen && pathname === "/" && (
+        <div className="offer-popup-backdrop" onClick={() => setIsOfferPopupOpen(false)}>
+          <div className="offer-popup-card" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-label="Limited time offer">
+            <button
+              type="button"
+              className="offer-popup-close"
+              aria-label="Close offer popup"
+              onClick={() => setIsOfferPopupOpen(false)}
+            >
+              ×
+            </button>
+            <span className="offer-popup-badge">Limited Time Offer</span>
+            <h2>Get 50% Off Your Order</h2>
+            <p className="offer-popup-copy">
+              Use the special code below at checkout and unlock your discount instantly.
+            </p>
+            <div className="offer-popup-code-box">50%ROBMIT</div>
+            <p className="offer-popup-note">Works in capital or small letters.</p>
+            <div className="offer-popup-actions">
+              <button
+                type="button"
+                className="offer-popup-secondary"
+                onClick={() => setIsOfferPopupOpen(false)}
+              >
+                Maybe later
+              </button>
+              <button
+                type="button"
+                className="offer-popup-primary"
+                onClick={() => {
+                  setIsOfferPopupOpen(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
+                Shop now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Cart
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}

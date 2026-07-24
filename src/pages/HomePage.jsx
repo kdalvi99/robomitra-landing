@@ -11,11 +11,13 @@ import {
   ShoppingBag,
   Smile,
   Sparkles,
+  Tag,
   Truck,
   Volume2,
+  X,
   Zap,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FadeIn from "../components/FadeIn";
 import Header from "../components/Header";
 import ModelViewerModal from "../components/ModelViewerModal";
@@ -27,8 +29,13 @@ import helloProductImg from "../assets/hello.jpeg";
 import keychainWhite from "../assets/robomitra-keychain-white.jpeg";
 import keychainBlack from "../assets/robomitra-keychain-black.jpeg";
 import dualRobotsImg from "../assets/dual-robots.jpg";
-import heroImg from "../assets/heroma1in.jpeg";
 import mainsecondImg from "../assets/mainsecond.jpeg";
+import heroSlideOne from "../assets/50-off-1.jpg";
+import heroSlideTwo from "../assets/50-off-2.jpg";
+import heroSlideThree from "../assets/50-off-4.jpg";
+import heroSlideOneMobile from "../assets/50-off-1for phone.jpeg";
+import heroSlideTwoMobile from "../assets/50-off-2for phone.jpeg";
+import heroSlideThreeMobile from "../assets/50-off-3for phone.jpeg";
 
 const whatsappUrl = "https://wa.me/917977473538";
 
@@ -87,7 +94,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "Hello",
     tagline: "New Interactive Robot",
-    price: "₹1,699",
+    price: "₹3,398",
+    originalPrice: "₹6,796",
     image: helloProductImg,
     whatsappMsg: "I want to buy RoboMitra Hello",
     tag: "New Product",
@@ -107,7 +115,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "R1",
     tagline: "Smart Interactive Robot",
-    price: "₹1,599",
+    price: "₹3,198",
+    originalPrice: "₹6,396",
     image: img1599,
     whatsappMsg: "I want to buy RoboMitra R1",
     tag: "Flagship",
@@ -127,7 +136,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "Alex",
     tagline: "Pocket-Sized Companion Robot (White)",
-    price: "₹999",
+    price: "₹1,998",
+    originalPrice: "₹3,996",
     image: keychainWhite,
     whatsappMsg: "I want to buy RoboMitra Alex",
     tag: "New Launch",
@@ -147,7 +157,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "Andy",
     tagline: "Pocket-Sized Companion Robot (Black)",
-    price: "₹999",
+    price: "₹1,998",
+    originalPrice: "₹3,996",
     image: keychainBlack,
     whatsappMsg: "I want to buy RoboMitra Andy",
     tag: "New Variant",
@@ -210,6 +221,30 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
   const [reviews, setReviews] = useState(initialReviews);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
   const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+  const [showOfferPopup, setShowOfferPopup] = useState(false);
+  const popupTimerRef = useRef(null);
+
+  const heroSlides = [
+    {
+      image: heroSlideOne,
+      mobileImage: heroSlideOneMobile,
+      alt: "RoboMitra 50 percent off banner 1",
+      badge: "Special Offer",
+    },
+    {
+      image: heroSlideTwo,
+      mobileImage: heroSlideTwoMobile,
+      alt: "RoboMitra 50 percent off banner 2",
+      badge: "Limited Time",
+    },
+    {
+      image: heroSlideThree,
+      mobileImage: heroSlideThreeMobile,
+      alt: "RoboMitra 50 percent off banner 3",
+      badge: "Best Deal",
+    },
+  ];
 
   useEffect(() => {
     let cancelled = false;
@@ -244,6 +279,22 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
     };
   }, []);
 
+  // Show 50% off popup after a short delay on mount
+  useEffect(() => {
+    popupTimerRef.current = setTimeout(() => {
+      setShowOfferPopup(true);
+    }, 800);
+    return () => clearTimeout(popupTimerRef.current);
+  }, []);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4200);
+
+    return () => window.clearInterval(intervalId);
+  }, [heroSlides.length]);
+
   const filteredProducts = shopProducts.filter((product) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -256,6 +307,83 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
 
   return (
     <div className="page-shell">
+      {/* ── 50% OFF POPUP ── */}
+      {showOfferPopup && (
+        <div
+          className="rm-offer-popup-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Special 50% off offer"
+          onClick={() => setShowOfferPopup(false)}
+        >
+          <div
+            className="rm-offer-popup"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="rm-offer-popup-close"
+              type="button"
+              aria-label="Close offer popup"
+              onClick={() => setShowOfferPopup(false)}
+            >
+              <X size={18} />
+            </button>
+
+            <div className="rm-offer-popup-badge">
+              <Tag size={14} />
+              Limited Time Deal
+            </div>
+
+            <div className="rm-offer-popup-pct">50% OFF</div>
+
+            <h2 className="rm-offer-popup-title">Mega Sale is Live! 🎉</h2>
+            <p className="rm-offer-popup-sub">
+              Get all RoboMitra products at <strong>50% off</strong> for a limited time.
+              Grab yours before the offer ends!
+            </p>
+
+            <div className="rm-offer-popup-products">
+              <div className="rm-offer-popup-row">
+                <span>RoboMitra Hello</span>
+                <span><s className="rm-offer-orig">₹6,796</s> <strong className="rm-offer-new">₹3,398</strong></span>
+              </div>
+              <div className="rm-offer-popup-row">
+                <span>RoboMitra R1</span>
+                <span><s className="rm-offer-orig">₹6,396</s> <strong className="rm-offer-new">₹3,198</strong></span>
+              </div>
+              <div className="rm-offer-popup-row">
+                <span>RoboMitra Alex</span>
+                <span><s className="rm-offer-orig">₹3,996</s> <strong className="rm-offer-new">₹1,998</strong></span>
+              </div>
+              <div className="rm-offer-popup-row">
+                <span>RoboMitra Andy</span>
+                <span><s className="rm-offer-orig">₹3,996</s> <strong className="rm-offer-new">₹1,998</strong></span>
+              </div>
+            </div>
+
+            <div className="rm-offer-popup-coupon">
+              <span className="rm-offer-coupon-label">Use code at checkout:</span>
+              <div className="rm-offer-coupon-box">
+                <span className="rm-offer-coupon-code">505ROBMIT</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="rm-offer-popup-cta"
+              onClick={() => {
+                setShowOfferPopup(false);
+                document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Order Now 🛒
+            </button>
+
+            <p className="rm-offer-popup-note">Limited stock · Offer ends soon</p>
+          </div>
+        </div>
+      )}
+
       <ProductDetailsModal
         isOpen={!!selectedProduct}
         product={selectedProduct}
@@ -292,15 +420,70 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
         {/* ── HERO ── */}
         <section className="rm-hero" id="home" style={{ padding: 0, background: '#fff', width: '100%' }}>
           <FadeIn delay={0.05}>
-            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="rm-hero-image-link">
+            <div className="rm-hero-slider-shell">
               <div className="rm-hero-image-anim-wrap">
-                <img
-                  className="rm-hero-animated-img"
-                  src={heroImg}
-                  alt="Meet RoboMitra R1 - Smart. Cute. Interactive."
-                />
+                <div
+                  className="rm-hero-slider-track"
+                  style={{ transform: `translate3d(-${currentHeroSlide * 100}%, 0, 0)` }}
+                >
+                  {heroSlides.map((slide, index) => (
+                    <a
+                      key={slide.image}
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`rm-hero-image-link ${index === currentHeroSlide ? "is-active" : ""}`}
+                      aria-label={`Open RoboMitra offer slide ${index + 1}`}
+                    >
+                      <picture>
+                        <source media="(max-width: 768px)" srcSet={slide.mobileImage} />
+                        <img
+                          className="rm-hero-animated-img"
+                          src={slide.image}
+                          alt={slide.alt}
+                        />
+                      </picture>
+                    </a>
+                  ))}
+                </div>
+
+                <div className="rm-hero-slider-topbar">
+                  <span className="rm-hero-slider-badge">{heroSlides[currentHeroSlide].badge}</span>
+                  <div className="rm-hero-slider-controls" aria-label="Hero banner controls">
+                    <button
+                      type="button"
+                      className="rm-hero-slider-arrow"
+                      aria-label="Previous slide"
+                      onClick={() =>
+                        setCurrentHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)
+                      }
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      className="rm-hero-slider-arrow"
+                      aria-label="Next slide"
+                      onClick={() => setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length)}
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rm-hero-slider-dots" aria-label="Hero banner pagination">
+                  {heroSlides.map((slide, index) => (
+                    <button
+                      key={slide.badge}
+                      type="button"
+                      className={`rm-hero-slider-dot ${index === currentHeroSlide ? "is-active" : ""}`}
+                      aria-label={`Go to slide ${index + 1}`}
+                      onClick={() => setCurrentHeroSlide(index)}
+                    />
+                  ))}
+                </div>
               </div>
-            </a>
+            </div>
           </FadeIn>
         </section>
 
@@ -379,11 +562,17 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
                         <img src={product.image} alt={`${product.name} ${product.nameHighlight}`} />
                       </div>
                       <div className="rm-product-info">
-                        <p className="rm-product-name">
-                          {product.name} <span>{product.nameHighlight}</span>
-                        </p>
+                        <div className="rm-product-name-row">
+                          <p className="rm-product-name">
+                            {product.name} <span>{product.nameHighlight}</span>
+                          </p>
+                          <span className="rm-product-discount-badge">50% OFF</span>
+                        </div>
                         <p className="rm-product-tagline">{product.tagline}</p>
-                        <p className="rm-product-price">{product.price}</p>
+                        <div className="rm-product-price-row">
+                          <s className="rm-product-original-price">{product.originalPrice}</s>
+                          <p className="rm-product-price">{product.price}</p>
+                        </div>
                         <button
                           className="rm-product-buy-btn"
                           type="button"

@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 export default function Cart({
   isOpen,
@@ -13,12 +13,24 @@ export default function Cart({
   user,
   onLoginClick,
 }) {
+  const [couponCode, setCouponCode] = useState("");
+
   const subtotal = cartItems.reduce(
     (acc, item) => acc + parseFloat(item.price.replace(/[^\d]/g, "")) * item.quantity,
     0
   );
 
   const deliveryCharges = 150;
+  const validCouponCode = "50%robmit";
+  const normalizedCoupon = couponCode.trim().toLowerCase();
+  const isCouponApplied = normalizedCoupon === validCouponCode;
+  const discountAmount = isCouponApplied ? Math.round(subtotal * 0.5) : 0;
+  const total = Math.max(subtotal - discountAmount + deliveryCharges, 0);
+
+  const couponStatus = useMemo(() => {
+    if (!couponCode.trim()) return null;
+    return isCouponApplied ? "applied" : "invalid";
+  }, [couponCode, isCouponApplied]);
 
   const formatCurrency = (val) =>
     new Intl.NumberFormat("en-IN", {
@@ -30,8 +42,6 @@ export default function Cart({
   const handleCheckout = () => {
     if (cartItems.length === 0) return;
 
-    const total = subtotal + deliveryCharges;
-
     // Build product list
     const productLines = cartItems
       .map((item) => `  • ${item.quantity}x ${item.name} ${item.nameHighlight || ""} — ${item.price} each`)
@@ -41,6 +51,10 @@ export default function Cart({
 
     message += `🛒 *Order Details:*\n${productLines}\n\n`;
     message += `💵 *Subtotal:* ${formatCurrency(subtotal)}\n`;
+    if (isCouponApplied) {
+      message += `🏷️ *Discount Code:* ${validCouponCode}\n`;
+      message += `➖ *Discount:* -${formatCurrency(discountAmount)}\n`;
+    }
     message += `🚚 *Delivery Charges:* ${formatCurrency(deliveryCharges)}\n`;
     message += `💰 *Total Amount:* ${formatCurrency(total)}\n`;
 
@@ -174,17 +188,46 @@ export default function Cart({
                   </div>
                 )}
 
+                <div className="cart-coupon-box">
+                  <label className="cart-coupon-label" htmlFor="cart-coupon-code">
+                    Discount code
+                  </label>
+                  <div className="cart-coupon-row">
+                    <input
+                      id="cart-coupon-code"
+                      type="text"
+                      className="cart-coupon-input"
+                      placeholder="Enter discount code"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                    />
+                  </div>
+                  <p className={`cart-coupon-status ${couponStatus === "applied" ? "is-success" : couponStatus === "invalid" ? "is-error" : ""}`}>
+                    {couponStatus === "applied"
+                      ? "Discount applied successfully"
+                      : couponStatus === "invalid"
+                        ? "Invalid discount code"
+                        : "Enter your discount code to unlock the offer."}
+                  </p>
+                </div>
+
                 <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
                   <span>Subtotal</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
+                {isCouponApplied && (
+                  <div className="cart-summary-row cart-summary-discount" style={{ fontSize: "0.92rem", fontWeight: 700 }}>
+                    <span>Discount (50%robmit)</span>
+                    <span>-{formatCurrency(discountAmount)}</span>
+                  </div>
+                )}
                 <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
                   <span>Delivery Charges</span>
                   <span>{formatCurrency(deliveryCharges)}</span>
                 </div>
                 <div className="cart-summary-row" style={{ marginTop: "4px", paddingTop: "12px", borderTop: "1px dashed var(--border)" }}>
                   <span>Total</span>
-                  <span className="cart-subtotal-price">{formatCurrency(subtotal + deliveryCharges)}</span>
+                  <span className="cart-subtotal-price">{formatCurrency(total)}</span>
                 </div>
                 <p className="cart-shipping-notice">
                   Orders are processed via WhatsApp. A flat delivery charge of ₹150 applies.

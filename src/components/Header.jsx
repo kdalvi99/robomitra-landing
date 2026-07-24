@@ -93,7 +93,7 @@ function Header({
   const announcements = [
     { emoji: "🚀", text: "Proudly Made in India" },
     { emoji: "⚡", text: "Smart Robots for a Smarter Tomorrow" },
-    { emoji: "🤖", text: "RoboMitra R1 — Starting at ₹1,599" },
+    { emoji: "🤖", text: "RoboMitra R1 — Starting at ₹3,198" },
     { emoji: "🎮", text: "Play Mini Games on Your Robot's Screen" },
     { emoji: "🔋", text: "2-4 Hours Battery with Type-C Charging" },
     { emoji: "📦", text: "Fast Delivery Across India" },
