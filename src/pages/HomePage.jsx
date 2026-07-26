@@ -36,6 +36,8 @@ import heroSlideThree from "../assets/50-off-4.jpg";
 import heroSlideOneMobile from "../assets/50-off-1for phone.jpeg";
 import heroSlideTwoMobile from "../assets/50-off-2for phone.jpeg";
 import heroSlideThreeMobile from "../assets/50-off-3for phone.jpeg";
+import robotVideo360 from "../assets/360ROBOTVIEW.mp4";
+import robotVideo360_2 from "../assets/360ROBOTVIEW2.mp4";
 
 const whatsappUrl = "https://wa.me/917977473538";
 
@@ -508,6 +510,59 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
               ))}
             </div>
           </div>
+        </section>
+
+        {/* ── 360° ROBOT VIEW VIDEO ── */}
+        <section className="rm-360-showcase" aria-label="RoboMitra 360 degree view">
+          <FadeIn delay={0.06}>
+            <div className="rm-360-container">
+              <div className="rm-360-header">
+                <span className="rm-360-tag">
+                  <Sparkles size={14} className="rm-360-tag-icon" /> 360° View
+                </span>
+                <h2>
+                  Experience <span className="rm-text-gradient">Every Angle</span>
+                </h2>
+                <p>Discover the sleek curves and premium finish of RoboMitra in full 360 degrees. Crafted for perfection.</p>
+              </div>
+              
+              <div className="rm-360-video-wrapper-outer">
+                <div className="rm-360-glow-bg"></div>
+                <div className="rm-360-grid">
+                  <div className="rm-360-video-box">
+                    <div className="rm-360-interactive-hint">
+                      <span className="rm-hint-dot"></span> Auto-Rotating
+                    </div>
+                    <video
+                      className="rm-360-vid"
+                      src={robotVideo360}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      aria-label="RoboMitra 360 degree rotating view"
+                    />
+                  </div>
+                  <div className="rm-360-video-box">
+                    <div className="rm-360-interactive-hint">
+                      <span className="rm-hint-dot"></span> Auto-Rotating
+                    </div>
+                    <video
+                      className="rm-360-vid"
+                      src={robotVideo360_2}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      aria-label="RoboMitra second 360 degree rotating view"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
         </section>
 
         {/* ── DARK PRODUCT BANNER ── */}
