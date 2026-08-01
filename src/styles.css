@@ -292,6 +292,25 @@ button {
   text-decoration: none;
   gap: 10px;
   flex-shrink: 0;
+  animation: brandIntro 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes brandIntro {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.86);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(0) scale(1.04);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .brand-text-logo {
@@ -301,6 +320,25 @@ button {
   color: var(--text);
   letter-spacing: -0.04em;
   line-height: 1;
+  position: relative;
+  isolation: isolate;
+}
+
+.brand-text-logo::after {
+  content: "";
+  position: absolute;
+  inset: -6px -10px;
+  background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.85) 48%, transparent 60%);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: brandShine 2.8s ease-in-out 0.15s 1 both;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes brandShine {
+  0% { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translateX(120%) skewX(-18deg); opacity: 0; }
 }
 
 .brand-text-logo span {
@@ -308,6 +346,75 @@ button {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(96,165,250,0.18) 100%);
+  border: 1px solid rgba(37,99,235,0.16);
+  box-shadow: 0 10px 24px rgba(37,99,235,0.14);
+  overflow: hidden;
+  animation: brandPulse 2.6s ease-in-out infinite;
+}
+
+.brand-mark::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff 0%, #eff6ff 100%);
+  box-shadow: inset 0 0 0 1px rgba(37,99,235,0.08);
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--blue);
+  box-shadow: 0 0 0 6px rgba(37,99,235,0.12), 0 0 22px rgba(37,99,235,0.35);
+  transform: translateX(-50%);
+}
+
+.brand-mark-core {
+  position: relative;
+  z-index: 1;
+  font-family: "Outfit", sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  color: var(--blue-deeper);
+  transform: translateY(1px);
+}
+
+.brand-mark-dot {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #60a5fa;
+  box-shadow: 0 0 16px rgba(96,165,250,0.9);
+  animation: brandDotPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes brandPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 10px 24px rgba(37,99,235,0.14); }
+  50% { transform: scale(1.05); box-shadow: 0 14px 28px rgba(37,99,235,0.24); }
+}
+
+@keyframes brandDotPulse {
+  0%, 100% { transform: scale(0.85); opacity: 0.75; }
+  50% { transform: scale(1.15); opacity: 1; }
 }
 
 .brand-logo-image {
@@ -5014,13 +5121,13 @@ button {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgba(8, 14, 32, 0.72);
-  backdrop-filter: blur(6px);
+  background: radial-gradient(circle at top, rgba(37, 99, 235, 0.14) 0%, rgba(8, 14, 32, 0.82) 42%, rgba(8, 14, 32, 0.92) 100%);
+  backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: rm-overlay-in 0.3s ease forwards;
+  animation: rm-overlay-in 0.5s ease forwards;
 }
 
 @keyframes rm-overlay-in {
@@ -5037,8 +5144,9 @@ button {
   width: 100%;
   box-shadow: 0 32px 80px rgba(37, 99, 235, 0.22), 0 8px 32px rgba(0,0,0,0.18);
   text-align: center;
-  animation: rm-popup-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: rm-popup-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   overflow: hidden;
+  transform-origin: center;
 }
 
 .rm-offer-popup::before {
@@ -5050,9 +5158,26 @@ button {
   border-radius: 24px 24px 0 0;
 }
 
+.rm-offer-popup::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -24%;
+  height: 220px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.08) 35%, transparent 72%);
+  filter: blur(20px);
+  animation: rm-popup-glow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
 @keyframes rm-popup-in {
-  from { opacity: 0; transform: scale(0.82) translateY(30px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  0% { opacity: 0; transform: scale(0.72) translateY(40px) rotateX(12deg); }
+  60% { opacity: 1; transform: scale(1.03) translateY(-4px) rotateX(0); }
+  100% { opacity: 1; transform: scale(1) translateY(0) rotateX(0); }
+}
+
+@keyframes rm-popup-glow {
+  0%, 100% { transform: scale(0.95); opacity: 0.65; }
+  50% { transform: scale(1.05); opacity: 1; }
 }
 
 .rm-offer-popup-close {
@@ -5275,12 +5400,11 @@ button {
     font-size: 3.4rem;
   }
 
-font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 5px 14px;
-  border-radius: 999px;
-  margin-bottom: 16px;
+  .rm-offer-popup-badge {
+    font-size: 0.68rem;
+    letter-spacing: 0.05em;
+    padding: 4px 12px;
+  }
 }
 
 .rm-offer-popup-pct {

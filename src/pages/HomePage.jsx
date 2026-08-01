@@ -368,6 +368,10 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
 
             <div className="rm-offer-popup-products">
               <div className="rm-offer-popup-row">
+                <span>PRISM X Mouse</span>
+                <span><s className="rm-offer-orig">₹5,398</s> <strong className="rm-offer-new">₹2,699</strong></span>
+              </div>
+              <div className="rm-offer-popup-row">
                 <span>RoboMitra Hello</span>
                 <span><s className="rm-offer-orig">₹6,798</s> <strong className="rm-offer-new">₹3,399</strong></span>
               </div>

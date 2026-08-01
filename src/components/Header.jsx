@@ -122,6 +122,10 @@ function Header({
           aria-label="RoboMitra home"
           onClick={(e) => handleInternalNavigation(e, "/")}
         >
+          <span className="brand-mark" aria-hidden="true">
+            <span className="brand-mark-core">R</span>
+            <span className="brand-mark-dot" />
+          </span>
           <span className="brand-text-logo">
             Robo<span>Mitra</span>
           </span>

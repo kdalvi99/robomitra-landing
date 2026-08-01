@@ -25,7 +25,7 @@ function App() {
 
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(true);
+  const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
