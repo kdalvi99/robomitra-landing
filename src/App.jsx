@@ -26,6 +26,7 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
+  const [showIntroSplash, setShowIntroSplash] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
@@ -120,6 +121,14 @@ function App() {
     document.documentElement.setAttribute("data-theme", "light");
   }, []);
 
+  useEffect(() => {
+    const splashTimer = window.setTimeout(() => {
+      setShowIntroSplash(false);
+    }, 2100);
+
+    return () => window.clearTimeout(splashTimer);
+  }, []);
+
   const navigateTo = (href) => {
     if (href.startsWith("#")) {
       if (window.location.pathname !== "/") {
@@ -173,6 +182,29 @@ function App() {
 
   return (
     <>
+      {showIntroSplash && (
+        <div className="intro-splash" aria-label="RoboMitra intro animation">
+          <div className="intro-splash-glow" />
+          <div className="intro-splash-card">
+            <div className="intro-splash-logo">
+              <span className="brand-mark intro-splash-mark" aria-hidden="true">
+                <span className="brand-mark-core">R</span>
+                <span className="brand-mark-dot" />
+              </span>
+              <div className="intro-splash-copy">
+                <span className="intro-splash-title">RoboMitra</span>
+                <span className="intro-splash-subtitle">Always Ready to Play</span>
+              </div>
+            </div>
+            <div className="intro-splash-loader" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        </div>
+      )}
+
       {pageContent}
       <AIAssistant />
       <ContactFloat />
