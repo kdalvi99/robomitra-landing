@@ -26,7 +26,7 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
-  const [showIntroSplash, setShowIntroSplash] = useState(true);
+  const [showIntroSplash, setShowIntroSplash] = useState(() => window.innerWidth > 768);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
@@ -122,6 +122,11 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (window.innerWidth <= 768) {
+      setShowIntroSplash(false);
+      return undefined;
+    }
+
     const splashTimer = window.setTimeout(() => {
       setShowIntroSplash(false);
     }, 2100);
@@ -187,11 +192,7 @@ function App() {
           <div className="intro-splash-glow" />
           <div className="intro-splash-card">
             <div className="intro-splash-logo">
-              <span className="brand-mark intro-splash-mark" aria-hidden="true">
-                <span className="brand-mark-core">R</span>
-                <span className="brand-mark-dot" />
-              </span>
-              <div className="intro-splash-copy">
+              <div className="intro-splash-text-brand">
                 <span className="intro-splash-title">RoboMitra</span>
                 <span className="intro-splash-subtitle">Always Ready to Play</span>
               </div>

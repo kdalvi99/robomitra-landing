@@ -247,6 +247,7 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
   const [showOfferPopup, setShowOfferPopup] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
   const popupTimerRef = useRef(null);
 
   const heroSlides = [
@@ -303,21 +304,30 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
     };
   }, []);
 
-  // Show 50% off popup after a short delay on mount
   useEffect(() => {
-    popupTimerRef.current = setTimeout(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Show 50% off popup after a short delay on desktop only
+  useEffect(() => {
+    if (isMobile) return undefined;
+
+    popupTimerRef.current = window.setTimeout(() => {
       setShowOfferPopup(true);
     }, 800);
-    return () => clearTimeout(popupTimerRef.current);
-  }, []);
+
+    return () => window.clearTimeout(popupTimerRef.current);
+  }, [isMobile]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setCurrentHeroSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 4200);
+    }, isMobile ? 7000 : 4200);
 
     return () => window.clearInterval(intervalId);
-  }, [heroSlides.length]);
+  }, [heroSlides.length, isMobile]);
 
   const filteredProducts = shopProducts.filter((product) => {
     const query = searchQuery.toLowerCase();
@@ -555,36 +565,56 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
               <div className="rm-360-video-wrapper-outer">
                 <div className="rm-360-glow-bg"></div>
                 <div className="rm-360-grid">
-                  <div className="rm-360-video-box">
-                    <div className="rm-360-interactive-hint">
-                      <span className="rm-hint-dot"></span> Auto-Rotating
+                  {isMobile ? (
+                    <div className="rm-360-video-box rm-360-video-box-single">
+                      <div className="rm-360-interactive-hint">
+                        <span className="rm-hint-dot"></span> Auto-Rotating
+                      </div>
+                      <video
+                        className="rm-360-vid"
+                        src={robotVideo360}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="metadata"
+                        aria-label="RoboMitra 360 degree rotating view"
+                      />
                     </div>
-                    <video
-                      className="rm-360-vid"
-                      src={robotVideo360}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      aria-label="RoboMitra 360 degree rotating view"
-                    />
-                  </div>
-                  <div className="rm-360-video-box">
-                    <div className="rm-360-interactive-hint">
-                      <span className="rm-hint-dot"></span> Auto-Rotating
-                    </div>
-                    <video
-                      className="rm-360-vid"
-                      src={robotVideo360_2}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      aria-label="RoboMitra second 360 degree rotating view"
-                    />
-                  </div>
+                  ) : (
+                    <>
+                      <div className="rm-360-video-box">
+                        <div className="rm-360-interactive-hint">
+                          <span className="rm-hint-dot"></span> Auto-Rotating
+                        </div>
+                        <video
+                          className="rm-360-vid"
+                          src={robotVideo360}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                          aria-label="RoboMitra 360 degree rotating view"
+                        />
+                      </div>
+                      <div className="rm-360-video-box">
+                        <div className="rm-360-interactive-hint">
+                          <span className="rm-hint-dot"></span> Auto-Rotating
+                        </div>
+                        <video
+                          className="rm-360-vid"
+                          src={robotVideo360_2}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                          aria-label="RoboMitra second 360 degree rotating view"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
