@@ -30,6 +30,7 @@ import keychainWhite from "../assets/robomitra-keychain-white.jpeg";
 import keychainBlack from "../assets/robomitra-keychain-black.jpeg";
 import dualRobotsImg from "../assets/dual-robots.jpg";
 import mainsecondImg from "../assets/mainsecond.jpeg";
+import mouseProductImg from "../assets/mouse.jpeg";
 import heroSlideOne from "../assets/50-off-1.jpg";
 import heroSlideTwo from "../assets/50-off-2.jpg";
 import heroSlideThree from "../assets/50-off-4.jpg";
@@ -92,12 +93,33 @@ const bannerBullets = [
 
 const shopProducts = [
   {
+    id: "mouse-2699",
+    name: "PRISM X",
+    nameHighlight: "Mouse",
+    tagline: "Ultra Slim Wireless Mouse",
+    price: "₹2,699",
+    originalPrice: "₹5,398",
+    image: mouseProductImg,
+    whatsappMsg: "I want to buy PRISM X Mouse",
+    tag: "New Product",
+    description: "A premium ultra-slim wireless mouse with a futuristic folded design.",
+    longDescription:
+      "PRISM X is a sleek ultra-slim wireless mouse built for a modern desk setup. It features a folded, pocketable body, 2.4GHz wireless connectivity, and a premium matte finish.",
+    highlights: [
+      "Ultra slim folded design",
+      "2.4GHz wireless connection",
+      "Portable desk-friendly form",
+      "Premium matte finish",
+    ],
+    specs: ["Wireless", "Ultra Slim", "Portable", "Premium Finish"],
+  },
+  {
     id: "hello-1699",
     name: "RoboMitra",
     nameHighlight: "Hello",
     tagline: "New Interactive Robot",
-    price: "₹3,398",
-    originalPrice: "₹6,796",
+    price: "₹3,399",
+    originalPrice: "₹6,798",
     image: helloProductImg,
     whatsappMsg: "I want to buy RoboMitra Hello",
     tag: "New Product",
@@ -117,8 +139,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "R1",
     tagline: "Smart Interactive Robot",
-    price: "₹3,198",
-    originalPrice: "₹6,396",
+    price: "₹3,199",
+    originalPrice: "₹6,798",
     image: img1599,
     whatsappMsg: "I want to buy RoboMitra R1",
     tag: "Flagship",
@@ -138,8 +160,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "Alex",
     tagline: "Pocket-Sized Companion Robot (White)",
-    price: "₹1,998",
-    originalPrice: "₹3,996",
+    price: "₹1,999",
+    originalPrice: "₹3,998",
     image: keychainWhite,
     whatsappMsg: "I want to buy RoboMitra Alex",
     tag: "New Launch",
@@ -159,8 +181,8 @@ const shopProducts = [
     name: "RoboMitra",
     nameHighlight: "Andy",
     tagline: "Pocket-Sized Companion Robot (Black)",
-    price: "₹1,998",
-    originalPrice: "₹3,996",
+    price: "₹1,999",
+    originalPrice: "₹3,998",
     image: keychainBlack,
     whatsappMsg: "I want to buy RoboMitra Andy",
     tag: "New Variant",
@@ -347,26 +369,26 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
             <div className="rm-offer-popup-products">
               <div className="rm-offer-popup-row">
                 <span>RoboMitra Hello</span>
-                <span><s className="rm-offer-orig">₹3,398</s> <strong className="rm-offer-new">₹1,699</strong></span>
+                <span><s className="rm-offer-orig">₹6,798</s> <strong className="rm-offer-new">₹3,399</strong></span>
               </div>
               <div className="rm-offer-popup-row">
                 <span>RoboMitra R1</span>
-                <span><s className="rm-offer-orig">₹3,198</s> <strong className="rm-offer-new">₹1,599</strong></span>
+                <span><s className="rm-offer-orig">₹6,398</s> <strong className="rm-offer-new">₹3,199</strong></span>
               </div>
               <div className="rm-offer-popup-row">
                 <span>RoboMitra Alex</span>
-                <span><s className="rm-offer-orig">₹1,998</s> <strong className="rm-offer-new">₹999</strong></span>
+                <span><s className="rm-offer-orig">₹3,998</s> <strong className="rm-offer-new">₹1,999</strong></span>
               </div>
               <div className="rm-offer-popup-row">
                 <span>RoboMitra Andy</span>
-                <span><s className="rm-offer-orig">₹1,998</s> <strong className="rm-offer-new">₹999</strong></span>
+                <span><s className="rm-offer-orig">₹3,998</s> <strong className="rm-offer-new">₹1,999</strong></span>
               </div>
             </div>
 
             <div className="rm-offer-popup-coupon">
               <span className="rm-offer-coupon-label">Use code at checkout:</span>
               <div className="rm-offer-coupon-box">
-                <span className="rm-offer-coupon-code">505ROBMIT</span>
+                <span className="rm-offer-coupon-code">50%ROBMIT</span>
               </div>
             </div>
 
