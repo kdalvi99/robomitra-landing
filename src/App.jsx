@@ -26,7 +26,8 @@ function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isOfferPopupOpen, setIsOfferPopupOpen] = useState(false);
-  const [showIntroSplash, setShowIntroSplash] = useState(() => window.innerWidth > 768);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  const [showIntroSplash, setShowIntroSplash] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sync cart with localStorage
@@ -122,17 +123,19 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (window.innerWidth <= 768) {
-      setShowIntroSplash(false);
-      return undefined;
-    }
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
+  useEffect(() => {
+    const splashDuration = isMobile ? 1200 : 2100;
     const splashTimer = window.setTimeout(() => {
       setShowIntroSplash(false);
-    }, 2100);
+    }, splashDuration);
 
     return () => window.clearTimeout(splashTimer);
-  }, []);
+  }, [isMobile]);
 
   const navigateTo = (href) => {
     if (href.startsWith("#")) {
@@ -193,7 +196,10 @@ function App() {
           <div className="intro-splash-card">
             <div className="intro-splash-logo">
               <div className="intro-splash-text-brand">
-                <span className="intro-splash-title">RoboMitra</span>
+                <span className="intro-splash-title">
+                  <span className="intro-splash-robo">Robo</span>
+                  <span className="intro-splash-mitra">Mitra</span>
+                </span>
                 <span className="intro-splash-subtitle">Always Ready to Play</span>
               </div>
             </div>

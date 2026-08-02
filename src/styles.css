@@ -286,12 +286,17 @@ button {
 }
 
 .brand-lockup {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   height: auto;
   text-decoration: none;
-  gap: 10px;
+  gap: 0;
   flex-shrink: 0;
+  padding: 10px 14px;
+  border-radius: 18px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.03);
   animation: brandIntro 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
@@ -317,18 +322,19 @@ button {
   font-family: "Outfit", "Inter", sans-serif;
   font-size: 1.45rem;
   font-weight: 900;
-  color: var(--text);
+  color: #fff;
   letter-spacing: -0.04em;
   line-height: 1;
   position: relative;
   isolation: isolate;
+  white-space: nowrap;
 }
 
 .brand-text-logo::after {
   content: "";
   position: absolute;
-  inset: -6px -10px;
-  background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.85) 48%, transparent 60%);
+  inset: -8px -12px;
+  background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.18) 48%, transparent 60%);
   transform: translateX(-120%) skewX(-18deg);
   animation: brandShine 2.8s ease-in-out 0.15s 1 both;
   pointer-events: none;
@@ -342,7 +348,7 @@ button {
 }
 
 .brand-text-logo span {
-  background: linear-gradient(135deg, var(--blue) 0%, #60a5fa 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -431,43 +437,15 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  background:
-    radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.18) 0%, transparent 30%),
-    radial-gradient(circle at 50% 70%, rgba(96, 165, 250, 0.12) 0%, transparent 38%),
-    linear-gradient(135deg, #050816 0%, #0b1630 55%, #07101f 100%);
+  background: #000000;
   overflow: hidden;
   animation: introFadeOut 0.45s ease 1.65s forwards;
-}
-
-.intro-splash::before,
-.intro-splash::after {
-  content: "";
-  position: absolute;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  filter: blur(40px);
-  pointer-events: none;
-}
-
-.intro-splash::before {
-  background: rgba(37, 99, 235, 0.28);
-  top: -120px;
-  left: -100px;
-  animation: introDrift 4.5s ease-in-out infinite;
-}
-
-.intro-splash::after {
-  background: rgba(59, 130, 246, 0.22);
-  bottom: -130px;
-  right: -120px;
-  animation: introDrift 5.6s ease-in-out infinite reverse;
 }
 
 .intro-splash-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(255,255,255,0.14) 0%, transparent 48%);
+  background: radial-gradient(circle at center, rgba(59,130,246,0.08) 0%, transparent 40%);
   animation: introGlow 2.8s ease-in-out infinite;
   pointer-events: none;
 }
@@ -494,7 +472,12 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+  padding: 22px 26px 20px;
+  border-radius: 24px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 .intro-splash-copy {
@@ -504,13 +487,24 @@ button {
 }
 
 .intro-splash-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
   font-family: "Outfit", "Inter", sans-serif;
   font-size: clamp(2.1rem, 6vw, 4rem);
   font-weight: 900;
   letter-spacing: -0.05em;
-  color: #fff;
   line-height: 1;
   animation: introTextRise 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.intro-splash-robo {
+  color: #fff;
+}
+
+.intro-splash-mitra {
+  color: #3b82f6;
+  animation: introMitraGlow 2.8s ease-in-out infinite;
 }
 
 .intro-splash-title span {
@@ -571,6 +565,11 @@ button {
 @keyframes introGlow {
   0%, 100% { transform: scale(0.95); opacity: 0.6; }
   50% { transform: scale(1.06); opacity: 1; }
+}
+
+@keyframes introMitraGlow {
+  0%, 100% { text-shadow: 0 0 0 rgba(59,130,246,0); }
+  50% { text-shadow: 0 0 16px rgba(59,130,246,0.6); }
 }
 
 @keyframes introDrift {
@@ -961,22 +960,71 @@ button {
 
   .announcement-bar,
   .announcement-bar::before,
-  .announcement-track,
-  .brand-lockup,
-  .brand-text-logo::after,
-  .brand-mark,
-  .brand-mark-dot {
+  .announcement-track {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
 
+  .brand-lockup {
+    animation-duration: 0.75s;
+  }
+
+  .brand-text-logo::after {
+    animation-duration: 1.8s;
+  }
+
+  .brand-mark {
+    animation-duration: 1.9s;
+  }
+
+  .brand-mark-dot {
+    animation-duration: 1.3s;
+  }
+
+  .intro-splash {
+    padding: 18px;
+  }
+
+  .intro-splash::before,
+  .intro-splash::after {
+    width: 260px;
+    height: 260px;
+    filter: blur(26px);
+  }
+
+  .intro-splash-orbit-a {
+    width: 180px;
+    height: 180px;
+  }
+
+  .intro-splash-orbit-b {
+    width: 240px;
+    height: 240px;
+  }
+
+  .intro-splash-card {
+    gap: 16px;
+    padding: 22px 20px;
+  }
+
+  .intro-splash-title {
+    font-size: clamp(1.8rem, 9vw, 2.8rem);
+  }
+
+  .intro-splash-subtitle {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+  }
+
+  .intro-splash-loader span {
+    width: 10px;
+    height: 10px;
+  }
+
   .rm-hero-image-anim-wrap::before,
   .rm-hero-image-anim-wrap::after,
-  .rm-hero-animated-img,
-  .intro-splash,
-  .intro-splash-glow,
-  .intro-splash-card {
-    animation: none !important;
+  .rm-hero-animated-img {
+    animation-duration: 9s;
   }
 
   .rm-360-glow-bg,
