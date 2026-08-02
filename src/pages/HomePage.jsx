@@ -565,58 +565,39 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
               <div className="rm-360-video-wrapper-outer">
                 <div className="rm-360-glow-bg"></div>
                 <div className="rm-360-grid">
-                  {isMobile ? (
-                    <div className="rm-360-video-box rm-360-video-box-single">
-                      <div className="rm-360-interactive-hint">
-                        <span className="rm-hint-dot"></span> Auto-Rotating
-                      </div>
-                      <video
-                        className="rm-360-vid"
-                        src={robotVideo360}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="metadata"
-                        aria-label="RoboMitra 360 degree rotating view"
-                      />
+                  <div className="rm-360-video-box">
+                    <div className="rm-360-interactive-hint">
+                      <span className="rm-hint-dot"></span> Auto-Rotating
                     </div>
-                  ) : (
-                    <>
-                      <div className="rm-360-video-box">
-                        <div className="rm-360-interactive-hint">
-                          <span className="rm-hint-dot"></span> Auto-Rotating
-                        </div>
-                        <video
-                          className="rm-360-vid"
-                          src={robotVideo360}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="auto"
-                          aria-label="RoboMitra 360 degree rotating view"
-                        />
-                      </div>
-                      <div className="rm-360-video-box">
-                        <div className="rm-360-interactive-hint">
-                          <span className="rm-hint-dot"></span> Auto-Rotating
-                        </div>
-                        <video
-                          className="rm-360-vid"
-                          src={robotVideo360_2}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          preload="auto"
-                          aria-label="RoboMitra second 360 degree rotating view"
-                        />
-                      </div>
-                    </>
-                  )}
+                    <video
+                      className="rm-360-vid"
+                      src={robotVideo360}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload={isMobile ? "metadata" : "auto"}
+                      aria-label="RoboMitra 360 degree rotating view"
+                    />
+                  </div>
+                  <div className="rm-360-video-box">
+                    <div className="rm-360-interactive-hint">
+                      <span className="rm-hint-dot"></span> Auto-Rotating
+                    </div>
+                    <video
+                      className="rm-360-vid"
+                      src={robotVideo360_2}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload={isMobile ? "metadata" : "auto"}
+                      aria-label="RoboMitra second 360 degree rotating view"
+                    />
+                  </div>
                 </div>
               </div>
+              {isMobile && <p className="rm-360-mobile-cue">Scroll for products below</p>}
             </div>
           </FadeIn>
         </section>
