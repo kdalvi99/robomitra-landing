@@ -35,6 +35,11 @@ const INDIA_STATES = [
   { name: "West Bengal", cities: ["Kolkata", "Howrah", "Siliguri"] },
 ];
 
+const COUPON_OFFERS = [
+  { code: "50%robmit", label: "50% Off", type: "percent", value: 50 },
+  { code: "oldcusto100", label: "₹100 Off", type: "flat", value: 100 },
+];
+
 const makeEmptyCheckout = (user) => ({
   name: user?.name || "",
   email: user?.email || "",
@@ -55,7 +60,8 @@ export default function Cart({
   user,
   onLoginClick,
 }) {
-  const [couponCode, setCouponCode] = useState("");
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupons, setAppliedCoupons] = useState([]);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1);
   const [checkoutData, setCheckoutData] = useState(() => makeEmptyCheckout(user));
@@ -73,16 +79,36 @@ export default function Cart({
   );
 
   const deliveryCharges = 150;
-  const validCouponCode = "50%robmit";
-  const normalizedCoupon = couponCode.trim().toLowerCase();
-  const isCouponApplied = normalizedCoupon === validCouponCode;
-  const discountAmount = isCouponApplied ? Math.round(subtotal * 0.5) : 0;
+  
+  const matchedCoupons = appliedCoupons
+    .map(code => COUPON_OFFERS.find((offer) => offer.code.toLowerCase() === code))
+    .filter(Boolean);
+
+  const isCouponApplied = matchedCoupons.length > 0;
+  let discountAmount = 0;
+  matchedCoupons.forEach(coupon => {
+    if (coupon.type === "percent") {
+      discountAmount += Math.round(subtotal * (coupon.value / 100));
+    } else {
+      discountAmount += coupon.value;
+    }
+  });
+  
   const total = Math.max(subtotal - discountAmount + deliveryCharges, 0);
 
-  const couponStatus = useMemo(() => {
-    if (!couponCode.trim()) return null;
-    return isCouponApplied ? "applied" : "invalid";
-  }, [couponCode, isCouponApplied]);
+  const handleApplyCoupon = (codeToApply) => {
+    const normalized = codeToApply.trim().toLowerCase();
+    if (!normalized) return;
+    const isValid = COUPON_OFFERS.some(c => c.code.toLowerCase() === normalized);
+    if (isValid && !appliedCoupons.includes(normalized)) {
+      setAppliedCoupons([...appliedCoupons, normalized]);
+      setCouponInput("");
+    }
+  };
+
+  const handleRemoveCoupon = (codeToRemove) => {
+    setAppliedCoupons(appliedCoupons.filter(c => c !== codeToRemove));
+  };
 
   const selectedState = INDIA_STATES.find((entry) => entry.name === checkoutData.state);
   const cityOptions = selectedState?.cities || [];
@@ -120,8 +146,9 @@ export default function Cart({
     message += `🏷️ *State:* ${checkoutData.state || "Not selected"}\n`;
     message += `🏙️ *City:* ${checkoutData.city || "Not selected"}\n\n`;
     message += `💵 *Subtotal:* ${formatCurrency(subtotal)}\n`;
-    if (isCouponApplied) {
-      message += `🏷️ *Discount Code:* ${validCouponCode}\n`;
+    if (matchedCoupons.length > 0) {
+      const codes = matchedCoupons.map(c => c.code).join(", ");
+      message += `🏷️ *Discount Code:* ${codes}\n`;
       message += `➖ *Discount:* -${formatCurrency(discountAmount)}\n`;
     }
     message += `🚚 *Delivery Charges:* ${formatCurrency(deliveryCharges)}\n`;
@@ -220,12 +247,12 @@ export default function Cart({
                   <span>Subtotal</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
-                {isCouponApplied && (
-                  <div className="cart-summary-row cart-summary-discount" style={{ fontSize: "0.92rem", fontWeight: 700 }}>
-                    <span>Discount (50%robmit)</span>
-                    <span>-{formatCurrency(discountAmount)}</span>
+                {matchedCoupons.map((coupon) => (
+                  <div key={coupon.code} className="cart-summary-row cart-summary-discount" style={{ fontSize: "0.92rem", fontWeight: 700 }}>
+                    <span>Discount ({coupon.code})</span>
+                    <span>-{formatCurrency(coupon.type === "percent" ? Math.round(subtotal * (coupon.value / 100)) : coupon.value)}</span>
                   </div>
-                )}
+                ))}
                 <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
                   <span>Delivery Charges</span>
                   <span>{formatCurrency(deliveryCharges)}</span>
@@ -435,37 +462,146 @@ export default function Cart({
                             <label className="cart-coupon-label" htmlFor="checkout-coupon-code">
                               Discount code
                             </label>
-                            <div className="cart-coupon-row">
+                            <div className="cart-coupon-chips" aria-label="Available discount codes">
+                              {COUPON_OFFERS.filter(offer => offer.code === "50%robmit").map((offer) => {
+                                const isActive = appliedCoupons.includes(offer.code.toLowerCase());
+                                return (
+                                  <button
+                                    key={offer.code}
+                                    type="button"
+                                    className={`cart-coupon-chip ${isActive ? "is-active" : ""}`}
+                                    onClick={() => {
+                                      if (isActive) {
+                                        handleRemoveCoupon(offer.code.toLowerCase());
+                                      } else {
+                                        handleApplyCoupon(offer.code);
+                                      }
+                                    }}
+                                  >
+                                    {offer.code} · {offer.label} {isActive && <X size={12} style={{marginLeft: 4, display: 'inline-block'}}/>}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            <div className="cart-coupon-row" style={{ display: "flex", gap: "10px", marginTop: "12px", position: "relative" }}>
                               <input
                                 id="checkout-coupon-code"
                                 type="text"
                                 className="cart-coupon-input"
-                                placeholder="Type code here"
-                                value={couponCode}
-                                onChange={(e) => setCouponCode(e.target.value)}
+                                placeholder="Have a discount code?"
+                                value={couponInput}
+                                onChange={(e) => setCouponInput(e.target.value)}
+                                style={{
+                                  flex: 1,
+                                  background: "var(--bg-soft)",
+                                  border: "2px solid var(--border)",
+                                  borderRadius: "12px",
+                                  padding: "12px 16px",
+                                  fontSize: "0.95rem",
+                                  fontWeight: "500",
+                                  color: "var(--text)",
+                                  transition: "all var(--transition)",
+                                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
+                                }}
+                                onFocus={(e) => {
+                                  e.target.style.borderColor = "var(--blue)";
+                                  e.target.style.boxShadow = "0 0 0 4px var(--blue-glow)";
+                                }}
+                                onBlur={(e) => {
+                                  e.target.style.borderColor = "var(--border)";
+                                  e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)";
+                                }}
                               />
+                              <button
+                                type="button"
+                                style={{
+                                  padding: "0 24px",
+                                  borderRadius: "12px",
+                                  fontSize: "0.95rem",
+                                  fontWeight: "700",
+                                  background: "var(--gradient-brand)",
+                                  color: "#fff",
+                                  border: "none",
+                                  cursor: "pointer",
+                                  boxShadow: "var(--shadow-blue)",
+                                  transition: "all var(--transition)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center"
+                                }}
+                                onMouseOver={(e) => {
+                                  e.currentTarget.style.transform = "translateY(-2px)";
+                                  e.currentTarget.style.boxShadow = "var(--shadow-blue-lg)";
+                                }}
+                                onMouseOut={(e) => {
+                                  e.currentTarget.style.transform = "translateY(0)";
+                                  e.currentTarget.style.boxShadow = "var(--shadow-blue)";
+                                }}
+                                onClick={() => handleApplyCoupon(couponInput)}
+                              >
+                                Apply
+                              </button>
                             </div>
-                            <p
-                              className={`cart-coupon-status ${couponStatus === "applied" ? "is-success" : couponStatus === "invalid" ? "is-error" : ""}`}
-                            >
-                              {couponStatus === "applied"
-                                ? "Discount applied successfully"
-                                : couponStatus === "invalid"
-                                  ? "Invalid discount code"
-                                  : "Type your code before placing the order."}
-                            </p>
+                            {appliedCoupons.length > 0 && (
+                              <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "8px" }}>
+                                {matchedCoupons.map((c) => (
+                                  <motion.div 
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    key={c.code} 
+                                    style={{ 
+                                      display: "flex", 
+                                      justifyContent: "space-between", 
+                                      alignItems: "center", 
+                                      background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%)",
+                                      border: "1px solid rgba(16, 185, 129, 0.2)",
+                                      padding: "10px 16px", 
+                                      borderRadius: "10px", 
+                                      fontSize: "0.9rem", 
+                                      fontWeight: "600", 
+                                      color: "var(--green-dark)" 
+                                    }}
+                                  >
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                      <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "var(--green)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                        <X size={12} style={{ transform: "rotate(45deg)" }} />
+                                      </div>
+                                      <span><strong style={{textTransform: 'uppercase', letterSpacing: '0.5px'}}>{c.code}</strong> applied!</span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRemoveCoupon(c.code.toLowerCase())}
+                                      style={{ 
+                                        background: "rgba(16, 185, 129, 0.15)", 
+                                        border: "none", 
+                                        cursor: "pointer", 
+                                        color: "var(--green-dark)", 
+                                        display: "flex",
+                                        padding: "4px",
+                                        borderRadius: "50%",
+                                        transition: "all var(--transition)"
+                                      }}
+                                      onMouseOver={(e) => e.currentTarget.style.background = "rgba(16, 185, 129, 0.3)"}
+                                      onMouseOut={(e) => e.currentTarget.style.background = "rgba(16, 185, 129, 0.15)"}
+                                    >
+                                      <X size={14} />
+                                    </button>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            )}
                           </div>
 
                           <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
                             <span>Subtotal</span>
                             <span>{formatCurrency(subtotal)}</span>
                           </div>
-                          {isCouponApplied && (
-                            <div className="cart-summary-row cart-summary-discount" style={{ fontSize: "0.92rem", fontWeight: 700 }}>
-                              <span>Discount (50%robmit)</span>
-                              <span>-{formatCurrency(discountAmount)}</span>
+                          {matchedCoupons.map((coupon) => (
+                            <div key={coupon.code} className="cart-summary-row cart-summary-discount" style={{ fontSize: "0.92rem", fontWeight: 700 }}>
+                              <span>Discount ({coupon.code})</span>
+                              <span>-{formatCurrency(coupon.type === "percent" ? Math.round(subtotal * (coupon.value / 100)) : coupon.value)}</span>
                             </div>
-                          )}
+                          ))}
                           <div className="cart-summary-row" style={{ fontSize: "0.92rem", color: "var(--text-secondary)", fontWeight: 500 }}>
                             <span>Delivery Charges</span>
                             <span>{formatCurrency(deliveryCharges)}</span>
