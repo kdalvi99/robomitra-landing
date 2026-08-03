@@ -122,11 +122,6 @@ export default function Cart({
     0
   );
 
-  const originalDeliveryCharges = 150;
-  const deliveryCharges = 0; // FREE
-  const originalHandlingFee = 10;
-  const handlingFee = 0; // FREE
-
   const matchedCoupons = appliedCoupons
     .map((code) => COUPON_OFFERS.find((offer) => offer.code.toLowerCase() === code))
     .filter(Boolean);
@@ -141,8 +136,8 @@ export default function Cart({
   });
 
   const mrpSavings = discountAmount;
-  const totalSavings = mrpSavings + originalDeliveryCharges + originalHandlingFee;
-  const total = Math.max(subtotal - discountAmount + deliveryCharges + handlingFee + tipAmount, 0);
+  const totalSavings = mrpSavings;
+  const total = Math.max(subtotal - discountAmount + tipAmount, 0);
 
   const handleApplyCoupon = (codeToApply) => {
     setCouponError("");
@@ -400,18 +395,15 @@ export default function Cart({
                     <div className="zepto-delivery-header">
                       <div className="zepto-delivery-left">
                         <div className="zepto-clock-icon-bg">
-                          <Clock size={18} />
+                          <ShoppingBag size={18} />
                         </div>
                         <div>
-                          <h4 className="zepto-delivery-title">Delivering in 6 mins</h4>
+                          <h4 className="zepto-delivery-title">Your Order Items</h4>
                           <span className="zepto-delivery-subtitle">
-                            {totalQuantity} {totalQuantity === 1 ? "item" : "items"}
+                            {totalQuantity} {totalQuantity === 1 ? "item" : "items"} selected
                           </span>
                         </div>
                       </div>
-                      <button className="zepto-schedule-btn">
-                        <Calendar size={14} /> Schedule
-                      </button>
                     </div>
 
                     {/* Items List */}
@@ -500,35 +492,12 @@ export default function Cart({
                         </div>
                       ))}
 
-                      <div className="zepto-bill-row">
-                        <span>Delivery Fee</span>
-                        <div className="zepto-bill-val">
-                          <span className="zepto-mrp-crossed">₹150</span>
-                          <span className="zepto-free-badge">FREE</span>
-                        </div>
-                      </div>
-
-                      <div className="zepto-bill-row">
-                        <span>Handling Fee</span>
-                        <div className="zepto-bill-val">
-                          <span className="zepto-mrp-crossed">₹10</span>
-                          <span className="zepto-free-badge">FREE</span>
-                        </div>
-                      </div>
-
-                      {tipAmount > 0 && (
-                        <div className="zepto-bill-row">
-                          <span>Delivery Tip</span>
-                          <span>{formatCurrency(tipAmount)}</span>
-                        </div>
-                      )}
-
                       <div className="zepto-bill-divider" />
 
                       <div className="zepto-bill-row zepto-bill-total-row">
                         <span>To Pay</span>
                         <div className="zepto-bill-val">
-                          <span className="zepto-mrp-crossed">{formatCurrency(Math.round(subtotal * 1.5) + 160)}</span>
+                          <span className="zepto-mrp-crossed">{formatCurrency(Math.round(subtotal * 1.5))}</span>
                           <span className="zepto-bill-final-total">{formatCurrency(total)}</span>
                         </div>
                       </div>
@@ -547,18 +516,6 @@ export default function Cart({
                         <div className="zepto-savings-icon-green">%</div>
                         <span className="zepto-savings-label">Discount on MRP</span>
                         <span className="zepto-savings-amount">{formatCurrency(mrpSavings)}</span>
-                      </div>
-
-                      <div className="zepto-savings-item">
-                        <div className="zepto-savings-icon-green">Z</div>
-                        <span className="zepto-savings-label">FREE delivery savings</span>
-                        <span className="zepto-savings-amount">₹150</span>
-                      </div>
-
-                      <div className="zepto-savings-item">
-                        <div className="zepto-savings-icon-green">₹</div>
-                        <span className="zepto-savings-label">Savings on Handling fee</span>
-                        <span className="zepto-savings-amount">₹10</span>
                       </div>
                     </div>
                   </div>
@@ -636,21 +593,6 @@ export default function Cart({
             {/* STICKY BOTTOM PAYMENT BAR (PAY ONLINE ONLY) */}
             {cartItems.length > 0 && (
               <div className="zepto-sticky-bottom">
-                {/* No bag option */}
-                <div className="zepto-bag-option-row" onClick={() => setDontNeedBag(!dontNeedBag)}>
-                  <div className="zepto-bag-left">
-                    <input
-                      type="checkbox"
-                      checked={dontNeedBag}
-                      onChange={() => {}}
-                      className="zepto-checkbox"
-                    />
-                    <span>I don't need a bag</span>
-                    <span className="zepto-leaf-emoji">🍃</span>
-                  </div>
-                  <ChevronRight size={16} className="zepto-row-chevron" />
-                </div>
-
                 {/* Bottom Action Row */}
                 <div className="zepto-bottom-action-row">
                   <div className="zepto-bottom-price-box">
