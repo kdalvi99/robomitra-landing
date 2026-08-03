@@ -6529,3 +6529,1012 @@ button {
     font-size: 0.72rem;
   }
 }
+
+/* =============================================
+   ZEPTO QUICK COMMERCE CART DRAWER STYLING (ROBOMITRA BLUE & WHITE)
+   ============================================= */
+.zepto-style-drawer {
+  max-width: 440px !important;
+  background: #f4f6fa !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+}
+
+.zepto-cart-header {
+  background: #ffffff;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eef2f6;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  z-index: 5;
+}
+
+.zepto-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zepto-back-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #1e293b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.zepto-back-btn:hover {
+  background: #f1f5f9;
+}
+
+.zepto-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zepto-header-title-row h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.zepto-arrow-down {
+  color: #64748b;
+}
+
+.zepto-header-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+.zepto-heart-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zepto-heart-btn:hover {
+  background: #eff6ff;
+  color: #2563eb;
+  border-color: #bfdbfe;
+}
+
+.zepto-savings-banner {
+  background: #ecfdf5;
+  border-bottom: 1px solid #a7f3d0;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #047857;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  z-index: 4;
+}
+
+.zepto-savings-banner:hover {
+  background: #d1fae5;
+}
+
+.zepto-savings-banner-text strong {
+  color: #047857;
+  font-weight: 800;
+}
+
+.zepto-savings-chevron {
+  color: #059669;
+}
+
+.zepto-cart-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 12px 140px 12px !important;
+}
+
+.zepto-scroll-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zepto-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+}
+
+/* Card 1: Coupons & Offers */
+.zepto-coupons-card {
+  border: 1.5px solid #dbeafe;
+  background: #ffffff;
+}
+
+.zepto-card-top-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.zepto-badge-blue {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.zepto-tag-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.zepto-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.zepto-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.zepto-offer-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.zepto-payment-offer-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.zepto-payment-offer-box:hover {
+  border-color: #bfdbfe;
+  background: #f8fafc;
+}
+
+.zepto-payment-offer-box.is-applied-box {
+  background: #eff6ff;
+  border-color: #2563eb;
+}
+
+.zepto-pay-logo {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+  white-space: nowrap;
+}
+
+.zepto-pay-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.zepto-pay-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.zepto-pay-sub {
+  font-size: 0.73rem;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.zepto-pay-apply-btn {
+  background: #ffffff;
+  border: 1.5px solid #2563eb;
+  color: #2563eb;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zepto-pay-apply-btn:hover {
+  background: #eff6ff;
+}
+
+.zepto-pay-apply-btn.is-applied {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+}
+
+.zepto-coupon-input-container {
+  margin-top: 10px;
+}
+
+.zepto-coupon-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 4px 6px 4px 12px;
+  transition: all 0.2s;
+}
+
+.zepto-coupon-input-wrapper:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: #ffffff;
+}
+
+.zepto-tag-input-icon {
+  color: #64748b;
+  margin-right: 6px;
+}
+
+.zepto-coupon-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #0f172a;
+  min-width: 0;
+}
+
+.zepto-coupon-apply-btn {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.zepto-coupon-apply-btn:hover {
+  background: #1d4ed8;
+}
+
+.zepto-coupon-error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin: 6px 0 0 0;
+  font-weight: 700;
+}
+
+.zepto-coupon-success {
+  color: #059669;
+  font-size: 0.75rem;
+  margin: 6px 0 0 0;
+  font-weight: 700;
+}
+
+.zepto-applied-stacked-box {
+  margin-top: 12px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.zepto-stacked-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #047857;
+  margin-bottom: 8px;
+}
+
+.zepto-stacked-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.zepto-stacked-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #6ee7b7;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: #065f46;
+}
+
+.zepto-stacked-tag strong {
+  text-transform: uppercase;
+  color: #047857;
+}
+
+.zepto-stacked-tag button {
+  background: #d1fae5;
+  border: none;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #047857;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.zepto-stacked-tag button:hover {
+  background: #a7f3d0;
+  color: #064e3b;
+}
+
+
+/* Card 2: Items & Delivery */
+.zepto-delivery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.zepto-delivery-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zepto-clock-icon-bg {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+}
+
+.zepto-delivery-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.zepto-delivery-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.zepto-schedule-btn {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.zepto-schedule-btn:hover {
+  background: #dbeafe;
+}
+
+.zepto-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.zepto-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.zepto-item-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.zepto-item-thumb {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.zepto-item-details {
+  flex: 1;
+}
+
+.zepto-item-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+  line-height: 1.35;
+}
+
+.zepto-item-pack {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.zepto-item-pricing-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zepto-mrp-crossed {
+  text-decoration: line-through;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.zepto-item-final-price {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+/* RoboMitra Blue Bordered Qty Selector */
+.zepto-qty-pill {
+  display: flex;
+  align-items: center;
+  background: #eff6ff;
+  border: 1.5px solid #2563eb;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 2px 4px;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.15);
+}
+
+.zepto-qty-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 900;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.zepto-qty-btn:hover {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.zepto-qty-count {
+  font-size: 0.88rem;
+  font-weight: 900;
+  color: #2563eb;
+  min-width: 22px;
+  text-align: center;
+}
+
+.zepto-add-more-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed #e2e8f0;
+  font-size: 0.82rem;
+  color: #475569;
+}
+
+.zepto-add-more-btn {
+  background: transparent;
+  border: none;
+  color: #2563eb;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 0.82rem;
+}
+
+.zepto-add-more-btn:hover {
+  text-decoration: underline;
+}
+
+/* Card 3: Bill Summary */
+.zepto-card-icon {
+  color: #0f172a;
+}
+
+.zepto-bill-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.zepto-bill-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.zepto-bill-val {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.zepto-green-row {
+  color: #059669;
+  font-weight: 700;
+}
+
+.zepto-free-badge {
+  color: #059669;
+  font-weight: 900;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.zepto-bill-divider {
+  height: 1px;
+  border-top: 1px dashed #cbd5e1;
+  margin: 4px 0;
+}
+
+.zepto-bill-total-row {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.zepto-bill-final-total {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+/* Card 4: Savings on this order */
+.zepto-savings-card {
+  background: #e8f8ee !important;
+  border: 1px solid #a7f3d0 !important;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.zepto-savings-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.zepto-savings-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #047857;
+  margin: 0;
+}
+
+.zepto-savings-pill {
+  background: #059669;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.zepto-savings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #a7f3d0;
+}
+
+.zepto-savings-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #065f46;
+}
+
+.zepto-savings-icon-green {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #059669;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zepto-savings-label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.zepto-savings-amount {
+  font-weight: 800;
+  color: #047857;
+}
+
+/* Card 5: Tip Delivery Partner */
+.zepto-tip-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 12px;
+}
+
+.zepto-tip-tab {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zepto-tip-tab.is-active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.zepto-tip-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.zepto-tip-text h5 {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.zepto-tip-text p {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin: 0 0 4px 0;
+  line-height: 1.35;
+}
+
+.zepto-tip-link {
+  font-size: 0.72rem;
+  color: #64748b;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.zepto-rider-graphic {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #eff6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zepto-tip-chips {
+  display: flex;
+  gap: 8px;
+}
+
+.zepto-tip-chip {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.zepto-tip-chip:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.zepto-tip-chip.is-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 800;
+}
+
+/* Card 6: Extra options */
+.zepto-extra-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.zepto-outline-btn {
+  border: 1.5px solid #2563eb;
+  color: #2563eb;
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zepto-outline-btn:hover {
+  background: #eff6ff;
+}
+
+.zepto-extra-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 12px 0;
+}
+
+.zepto-gst-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zepto-gst-icon {
+  color: #0f172a;
+}
+
+.zepto-gst-left strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.zepto-gst-left p {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.zepto-clear-all {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.zepto-clear-all:hover {
+  background: #fef2f2;
+}
+
+/* STICKY BOTTOM PAYMENT BAR */
+.zepto-sticky-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 10px 16px 14px 16px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.zepto-bag-option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: #334155;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+}
+
+.zepto-bag-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zepto-checkbox {
+  accent-color: #059669;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.zepto-leaf-emoji {
+  font-size: 0.9rem;
+}
+
+.zepto-bottom-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.zepto-bottom-price-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.zepto-to-pay-label {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.zepto-to-pay-amount {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.zepto-bottom-btn-group {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.zepto-pay-online-btn {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.zepto-pay-online-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.zepto-pay-blue-btn {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s;
+  line-height: 1.15;
+}
+
+.zepto-pay-blue-btn:hover {
+  background: linear-gradient(135deg, #1338b0 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+.zepto-btn-sub {
+  font-size: 0.65rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+
