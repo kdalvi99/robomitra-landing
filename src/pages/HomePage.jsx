@@ -31,6 +31,7 @@ import keychainBlack from "../assets/robomitra-keychain-black.jpeg";
 import dualRobotsImg from "../assets/dual-robots.jpg";
 import mainsecondImg from "../assets/mainsecond.jpeg";
 import mouseProductImg from "../assets/mouse.jpeg";
+import nimbuProductImg from "../assets/nimbu-product.jpeg";
 import heroSlideOne from "../assets/50-off-1.jpg";
 import heroSlideTwo from "../assets/50-off-2.jpg";
 import heroSlideThree from "../assets/50-off-4.jpg";
@@ -112,6 +113,27 @@ const shopProducts = [
       "Premium matte finish",
     ],
     specs: ["Wireless", "Ultra Slim", "Portable", "Premium Finish"],
+  },
+  {
+    id: "nimbu-bot-gift",
+    name: "Nimbu",
+    nameHighlight: "Bot Gift",
+    tagline: "Cute Gift Edition",
+    price: "₹949",
+    originalPrice: "₹1,898",
+    image: nimbuProductImg,
+    whatsappMsg: "I want to buy Nimbu Bot Gift",
+    tag: "Gift Pick",
+    description: "A fun gift-ready RoboMitra special edition for a sweet surprise.",
+    longDescription:
+      "Nimbu Bot Gift is a playful special-edition RoboMitra gift product designed for gifting and desk display. It brings a cute presentation with a premium look and a compact footprint.",
+    highlights: [
+      "Gift-ready special edition",
+      "Cute premium presentation",
+      "Compact desk display",
+      "Great for surprise gifting",
+    ],
+    specs: ["Gift Edition", "Compact", "Premium Look", "Best for Gifting"],
   },
   {
     id: "hello-1699",
@@ -697,6 +719,64 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
               </FadeIn>
             </div>
           </div>
+        </section>
+
+        {/* ── NIMBU BOT PROMO CARD ── */}
+        <section className="rm-nimbu-promo-section" aria-label="Nimbu Bot - New Product">
+          <FadeIn delay={0.06}>
+            <div
+              className="rm-nimbu-promo-card rm-nimbu-promo-card-premium"
+              role="button"
+              tabIndex={0}
+              onClick={() => onNavigate("/nimbubot")}
+              onKeyDown={(e) => e.key === 'Enter' && onNavigate("/nimbubot")}
+              aria-label="Explore Nimbu Bot - Starting from Rs 949"
+            >
+              <div className="rm-nimbu-promo-left">
+                <div className="rm-nimbu-promo-image-shell">
+                  <img
+                    src={nimbuProductImg}
+                    alt="Nimbu Bot Gift robot"
+                    className="rm-nimbu-promo-img"
+                  />
+                  <span className="rm-nimbu-float-tag">Gift Edition</span>
+                </div>
+              </div>
+              <div className="rm-nimbu-promo-right">
+                <span className="rm-nimbu-promo-badge">🍋 New Product</span>
+                <h2 className="rm-nimbu-promo-title">
+                  <span className="rm-nimbu-yellow">NIMBU</span>{" "}BOT
+                </h2>
+                <p className="rm-nimbu-promo-sub">Fresh. Smart. Full of Zest!</p>
+                <p className="rm-nimbu-promo-desc">
+                  Your zesty little companion — Touch responsive, animated eyes,
+                  beep talk & 2+ hours battery. Starting from just ₹949!
+                </p>
+                <div className="rm-nimbu-promo-highlight-row">
+                  <span className="rm-nimbu-promo-note-pill">50% coupon not on Nimbu Bot</span>
+                  <span className="rm-nimbu-promo-note-pill is-soft">₹949 gift special</span>
+                  <span className="rm-nimbu-promo-note-pill is-dark">Pocket sized</span>
+                </div>
+                <div className="rm-nimbu-promo-price">
+                  <span className="rm-nimbu-price-tag">Starting ₹949 Only!</span>
+                  <span className="rm-nimbu-price-note">Gift-ready and budget friendly!</span>
+                </div>
+                <div className="rm-nimbu-promo-spec-strip">
+                  <span>Touch</span>
+                  <span>Games</span>
+                  <span>Animated Eyes</span>
+                  <span>Battery</span>
+                </div>
+                <button
+                  type="button"
+                  className="rm-nimbu-explore-btn"
+                  onClick={(e) => { e.stopPropagation(); onNavigate("/nimbubot"); }}
+                >
+                  Explore Nimbu Bot →
+                </button>
+              </div>
+            </div>
+          </FadeIn>
         </section>
 
         {/* ── REVIEWS ── */}

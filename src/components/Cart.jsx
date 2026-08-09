@@ -64,8 +64,8 @@ const COUPON_OFFERS = [
     type: "flat",
     value: 100,
     title: "Flat ₹100 Extra Discount",
-    desc: "Exclusive secret coupon for RoboMitra customers",
-    hidden: true, // Hidden from visible cards, works when typed!
+    desc: "Exclusive coupon for RoboMitra customers",
+    hidden: false,
   },
   {
     code: "robo50",
@@ -74,7 +74,7 @@ const COUPON_OFFERS = [
     value: 50,
     title: "Flat ₹50 Bonus Coupon",
     desc: "Secret bonus coupon for extra savings",
-    hidden: true, // Hidden, works when typed!
+    hidden: true,
   },
 ];
 
@@ -122,6 +122,11 @@ export default function Cart({
     0
   );
 
+  const nimbuExcludedSubtotal = cartItems.reduce((acc, item) => {
+    if (item.id === "nimbu-bot-gift") return acc;
+    return acc + parseFloat(item.price.replace(/[^\d]/g, "")) * item.quantity;
+  }, 0);
+
   const matchedCoupons = appliedCoupons
     .map((code) => COUPON_OFFERS.find((offer) => offer.code.toLowerCase() === code))
     .filter(Boolean);
@@ -129,7 +134,8 @@ export default function Cart({
   let discountAmount = 0;
   matchedCoupons.forEach((coupon) => {
     if (coupon.type === "percent") {
-      discountAmount += Math.round(subtotal * (coupon.value / 100));
+      const baseAmount = coupon.code.toLowerCase() === "50%robmit" ? nimbuExcludedSubtotal : subtotal;
+      discountAmount += Math.round(baseAmount * (coupon.value / 100));
     } else {
       discountAmount += coupon.value;
     }

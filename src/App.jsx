@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AboutPage from "./pages/AboutPage";
 import HomePage from "./pages/HomePage";
 import SupportPage from "./pages/SupportPage";
+import NimbuBotPage from "./pages/NimbuBotPage";
 import AIAssistant from "./components/AIAssistant";
 import Cart from "./components/Cart";
 import LoginModal from "./components/LoginModal";
@@ -182,6 +183,8 @@ function App() {
     pageContent = <SupportPage {...sharedProps} />;
   } else if (pathname === "/about" || pathname === "/aboutus") {
     pageContent = <AboutPage {...sharedProps} />;
+  } else if (pathname === "/nimbubot") {
+    pageContent = <NimbuBotPage onNavigate={navigateTo} onAddToCart={addToCart} />;
   } else {
     pageContent = <HomePage {...sharedProps} onAddToCart={addToCart} />;
   }
