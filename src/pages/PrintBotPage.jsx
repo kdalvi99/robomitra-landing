@@ -67,7 +67,7 @@ const printProducts = [
     name: "Crystal Controller",
     nameHighlight: "Stand",
     tagline: "Level Up Your Gaming Setup. 🎮",
-    price: "₹600",
+    price: "₹599",
     originalPrice: "₹1,199",
     whatsappMsg: "Hi! I want to buy 3D Printed Crystal Controller Stand",
     tag: "Hot Release",
