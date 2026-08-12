@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const ProductDetailsModal = ({ product, isOpen, onClose, instagramUrl, theme, onAddToCart }) => {
   const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
-  const isNimbu = product?.id === 'nimbu-bot-gift';
+  const isNimbu = product?.id?.startsWith('nimbu-bot');
 
   return (
     <AnimatePresence>
@@ -110,7 +110,7 @@ const ProductDetailsModal = ({ product, isOpen, onClose, instagramUrl, theme, on
                 <span style={{ color: isNimbu ? '#7a6000' : '#3b82f6', fontWeight: '700', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{product.tag}</span>
                 {isNimbu && (
                   <span style={{ background: '#ffe234', color: '#3d2f00', padding: '5px 10px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 800 }}>
-                    50% coupon not on Nimbu
+                    Coupon not on Nimbu
                   </span>
                 )}
               </div>

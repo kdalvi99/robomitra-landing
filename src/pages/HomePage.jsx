@@ -32,6 +32,7 @@ import dualRobotsImg from "../assets/dual-robots.jpg";
 import mainsecondImg from "../assets/mainsecond.jpeg";
 import mouseProductImg from "../assets/mouse.jpeg";
 import nimbuProductImg from "../assets/nimbu-product.jpeg";
+import printProductSkeleton from "../assets/print-product-skeleton.jpg";
 import heroSlideOne from "../assets/50-off-1.jpg";
 import heroSlideTwo from "../assets/50-off-2.jpg";
 import heroSlideThree from "../assets/50-off-4.jpg";
@@ -773,6 +774,63 @@ function HomePage({ onNavigate, onAddToCart, cartCount, onCartClick, searchQuery
                   onClick={(e) => { e.stopPropagation(); onNavigate("/nimbubot"); }}
                 >
                   Explore Nimbu Bot →
+                </button>
+              </div>
+            </div>
+          </FadeIn>
+        </section>
+
+        {/* ── PRINT BOT PROMO CARD ── */}
+        <section className="rm-print-promo-section" aria-label="Print Bot - 3D Printing Service">
+          <FadeIn delay={0.06}>
+            <div
+              className="rm-print-promo-card rm-print-promo-card-premium"
+              role="button"
+              tabIndex={0}
+              onClick={() => onNavigate("/printbot")}
+              onKeyDown={(e) => e.key === 'Enter' && onNavigate("/printbot")}
+              aria-label="Explore Print Bot - 3D prints starting from Rs 349"
+            >
+              <div className="rm-print-promo-left">
+                <div className="rm-print-promo-image-shell">
+                  <img
+                    src={printProductSkeleton}
+                    alt="Print Bot 3D prints"
+                    className="rm-print-promo-img"
+                  />
+                  <span className="rm-print-float-tag">3D Printed</span>
+                </div>
+              </div>
+              <div className="rm-print-promo-right">
+                <span className="rm-print-promo-badge">💎 New Service</span>
+                <h2 className="rm-print-promo-title">
+                  <span className="rm-print-blue">PRINT</span>{" "}BOT
+                </h2>
+                <p className="rm-print-promo-sub">Bring Your Ideas to Life in 3D!</p>
+                <p className="rm-print-promo-desc">
+                  High-quality custom 3D prints. From articulating keychains and gaming gear to divine home decor and custom lanterns. Sturdy, beautiful, and personalized.
+                </p>
+                <div className="rm-print-promo-highlight-row">
+                  <span className="rm-print-promo-note-pill">50% coupon not on Print Bot</span>
+                  <span className="rm-print-promo-note-pill is-soft">₹349 keychain special</span>
+                  <span className="rm-print-promo-note-pill is-dark">Custom orders</span>
+                </div>
+                <div className="rm-print-promo-price">
+                  <span className="rm-print-price-tag">Starting ₹349 Only!</span>
+                  <span className="rm-print-price-note">Unique gifts and custom prints!</span>
+                </div>
+                <div className="rm-print-promo-spec-strip">
+                  <span>Custom Made</span>
+                  <span>PLA Filament</span>
+                  <span>Premium Finish</span>
+                  <span>Durable</span>
+                </div>
+                <button
+                  type="button"
+                  className="rm-print-explore-btn"
+                  onClick={(e) => { e.stopPropagation(); onNavigate("/printbot"); }}
+                >
+                  Explore Print Bot →
                 </button>
               </div>
             </div>

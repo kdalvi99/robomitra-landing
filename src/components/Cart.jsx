@@ -123,7 +123,7 @@ export default function Cart({
   );
 
   const nimbuExcludedSubtotal = cartItems.reduce((acc, item) => {
-    if (item.id === "nimbu-bot-gift") return acc;
+    if (item.id?.startsWith("nimbu-bot")) return acc;
     return acc + parseFloat(item.price.replace(/[^\d]/g, "")) * item.quantity;
   }, 0);
 

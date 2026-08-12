@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, BatteryCharging, Camera, Gamepad2, Hand, ShoppingBag, Smile, Sparkles, Star, Truck, Volume2, Zap } from "lucide-react";
+import ProductDetailsModal from "../components/ProductDetailsModal";
 import nimbuBanner1 from "../assets/nimbu-banner-1.jpeg";
 import nimbuBanner2 from "../assets/nimbu-banner-2.jpeg";
 import nimbuBanner3 from "../assets/nimbu-banner-3.jpeg";
@@ -76,6 +77,7 @@ const trustItems = [
 
 export default function NimbuBotPage({ onNavigate, onAddToCart }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
 
   useEffect(() => {
@@ -201,7 +203,33 @@ export default function NimbuBotPage({ onNavigate, onAddToCart }) {
 
             <div className="nimbu-products-grid">
               {nimbuProducts.map((product) => (
-                <article key={product.id} className="nimbu-product-card">
+                <article
+                  key={product.id}
+                  className="nimbu-product-card"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    setSelectedProduct({
+                      ...product,
+                      image: nimbuProduct,
+                      description: product.description,
+                      longDescription: product.description,
+                      specs: ["Gift Edition", "Compact", "Premium Look", "Best for Gifting"],
+                    })
+                  }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedProduct({
+                        ...product,
+                        image: nimbuProduct,
+                        description: product.description,
+                        longDescription: product.description,
+                        specs: ["Gift Edition", "Compact", "Premium Look", "Best for Gifting"],
+                      });
+                    }
+                  }}
+                >
                   <div className="nimbu-product-img-wrap">
                     <img src={nimbuProduct} alt={`${product.name} ${product.nameHighlight}`} />
                     <span className="nimbu-product-tag">{product.tag}</span>
@@ -212,8 +240,7 @@ export default function NimbuBotPage({ onNavigate, onAddToCart }) {
                     <h3 className="nimbu-product-name">
                       {product.name} <span>{product.nameHighlight}</span>
                     </h3>
-                    <p className="nimbu-product-tagline">{product.tagline}</p>
-                    <p className="nimbu-product-desc">{product.description}</p>
+                    <p className="nimbu-product-tagline">Tap to view details</p>
 
                     <div className="nimbu-product-price-row">
                       <s className="nimbu-product-orig">{product.originalPrice}</s>
@@ -221,19 +248,12 @@ export default function NimbuBotPage({ onNavigate, onAddToCart }) {
                       <span className="nimbu-product-discount">50% OFF</span>
                     </div>
 
-                    <ul className="nimbu-highlights-list">
-                      {product.highlights.map((h) => (
-                        <li key={h}>
-                          <span className="nimbu-check">✓</span> {h}
-                        </li>
-                      ))}
-                    </ul>
-
                     <div className="nimbu-product-actions">
                       <button
                         type="button"
                         className="nimbu-buy-btn"
-                        onClick={() =>
+                        onClick={(event) => {
+                          event.stopPropagation();
                           onAddToCart({
                             ...product,
                             image: nimbuProduct,
@@ -241,8 +261,8 @@ export default function NimbuBotPage({ onNavigate, onAddToCart }) {
                             description: product.description,
                             longDescription: product.description,
                             specs: ["Gift Edition", "Compact", "Premium Look", "Best for Gifting"],
-                          })
-                        }
+                          });
+                        }}
                       >
                         Add to Cart
                       </button>
@@ -251,18 +271,28 @@ export default function NimbuBotPage({ onNavigate, onAddToCart }) {
                         target="_blank"
                         rel="noreferrer"
                         className="nimbu-wa-btn"
+                        onClick={(event) => event.stopPropagation()}
                       >
                         WhatsApp
                       </a>
                     </div>
 
-                    <p className="nimbu-single-note">📦 Made for Makers · Built for Fun · RoboMitra</p>
+                    <p className="nimbu-single-note">Tap anywhere to open full product info</p>
                   </div>
                 </article>
               ))}
             </div>
           </div>
         </section>
+
+        <ProductDetailsModal
+          isOpen={!!selectedProduct}
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          instagramUrl={whatsappUrl}
+          theme="light"
+          onAddToCart={onAddToCart}
+        />
 
         <section className="nimbu-trust-strip">
           <div className="nimbu-trust-inner">

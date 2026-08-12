@@ -3,6 +3,7 @@ import AboutPage from "./pages/AboutPage";
 import HomePage from "./pages/HomePage";
 import SupportPage from "./pages/SupportPage";
 import NimbuBotPage from "./pages/NimbuBotPage";
+import PrintBotPage from "./pages/PrintBotPage";
 import AIAssistant from "./components/AIAssistant";
 import Cart from "./components/Cart";
 import LoginModal from "./components/LoginModal";
@@ -185,6 +186,8 @@ function App() {
     pageContent = <AboutPage {...sharedProps} />;
   } else if (pathname === "/nimbubot") {
     pageContent = <NimbuBotPage onNavigate={navigateTo} onAddToCart={addToCart} />;
+  } else if (pathname === "/printbot") {
+    pageContent = <PrintBotPage onNavigate={navigateTo} onAddToCart={addToCart} />;
   } else {
     pageContent = <HomePage {...sharedProps} onAddToCart={addToCart} />;
   }
